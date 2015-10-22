@@ -6,7 +6,7 @@ A. Synopsis
 
 What this is about
 ------------------
-We have created a IBM WebSphere Application Server cartridge in order to demonstrate the power and flexibility of Red Hat's Open Hybrid Cloud strategy. The main focus for this cartridge is OpenShift Enterprise (https://www.redhat.com/de/technologies/cloud-computing/openshift). 
+We have created an IBM WebSphere Application Server cartridge in order to demonstrate the power and flexibility of Red Hat's Open Hybrid Cloud strategy. The main focus for this cartridge is OpenShift Enterprise (https://www.redhat.com/de/technologies/cloud-computing/openshift). 
 
 The cartridge currently supports the following features:
 
