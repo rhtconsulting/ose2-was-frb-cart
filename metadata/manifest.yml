@@ -9,7 +9,7 @@ License-Url: http://www-03.ibm.com/software/products/en/appserv-wasfordev/
 Vendor: hoffmann
 Cartridge-Version: 0.0.1
 Compatible-Versions: []
-Cartridge-Vendor: hoffmann
+Cartridge-Vendor: frb
 Categories:
 - service
 - web_framework

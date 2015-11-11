@@ -6,18 +6,13 @@ A. Synopsis
 
 What this is about
 ------------------
-We have created an IBM WebSphere Application Server cartridge in order to demonstrate the power and flexibility of Red Hat's Open Hybrid Cloud strategy. The main focus for this cartridge is OpenShift Enterprise (https://www.redhat.com/de/technologies/cloud-computing/openshift). 
+This project represents the source code of the Websphere 8.5.5.1 OpenShift Enterprise cartridge. It is meant to be loaded into OpenShift from source code. There are a few installation steps that are outside OpenShift regarding the installation of IBM's WebSphere but also directory persmissions and SELinux policy enablement.
 
 The cartridge currently supports the following features:
 
 * Provisioning of new IBM WebSphere Application Server instance in minutes
 * Full build & Deploy life cycle (as with EAP cartridge)
 * Hot Deployment
-* Jenkins Integration
-* Integration into JBoss Developer Studio
-
-The source code can be found here: https://github.com/juhoffma/openshift-origin-websphere-cartridge
-
 
 Screenshots
 ------------------
@@ -33,18 +28,14 @@ Screenshots
 
 ![6. Demo of WebSphere Admin Console](./usr/doc/06_was_admin_console.png)
 
-![7. Integration into JBoss Developer Studio](./usr/doc/08_jbds_integration.png)
 
 B. Installation
 ===============
 
 1. Setup OSE Environment
 ------------------------
-You have the following deployment options for this cartridge:
 
-* OpenShift Origin developer image (http://openshift.github.io/documentation/oo_deployment_guide_vm.html)
-* OpenShift Enterprise developer image (https://rhn.redhat.com/rhn/software/channel/downloads/Download.do?cid=21355)
-* Standalone installation of Red Hat OpenShift Enterprise.
+The setup of the OSE Environment can be accomplished as per your usual way of deploying broker and nodes. This could be via the OSE install script, or any other CM tools like Puppet and Ansible
 
 
 2. WebSphere Application Server Installation
@@ -58,48 +49,24 @@ In contradiction to the deployment model of other cartridges (that includes all 
 
 
 ### Binary Installation
-The following steps will take you through the installation steps for IBM WebSphere Application Server for Developers:
-
-```
-# Install Installation Manager + WebSphere Application Server for Developers
-unzip DEVELOPERSILAN.agent.installer.linux.gtk.x86_64.zip
-
-# Replace install.xml
-# You can find a sample "install.xml" here https://github.com/juhoffma/openshift-origin-websphere-cartridge/tree/master/usr/doc/install.xml
-
- # Create key files (for connection to IBM download site)
-cd tools
-touch secureStorage
-touch masterPassword
-vi masterPassword
-
-# Insert your own IBM ID
-./imutilsc saveCredential -passportAdvantage -userName <IBMID_USERNAME> -userPassword <IBMID_PASSWORD> -secureStorageFile ./secureStorage -masterPasswordFile ./masterPassword
-
-# Start installation (you must be root)
-su -
-./installc -log /tmp/ibm_installation_manager.log -acceptLicense -masterPasswordFile ./tools/masterPassword -secureStorageFile ./tools/secureStorage
-```
+The installation of IBM WebSphere on the filesystem can be done either via the IBM agent installer or any other means that are currently emplyed. The main thing to note here is that profile creation inside the IBM WAS installation would need to be enabled to allow non root users to create them. That is because each gear in OSE will create its own profile and each gear runs as its own UUID and not as root.
 
 ### Non-Root permissions
 In order to create profiles by non-root users, special file permission settings have to be set on your WebSphere installation. Please follow the steps described here: http://www-01.ibm.com/support/knowledgecenter/SS7JFU_8.5.5/com.ibm.websphere.express.doc/ae/tpro_nonrootpro.html?lang=en
 
+We have included the setWebSpherePermissionsForNonRootProfileCreation.sh that sets basic file permissions on the diretories that gears would require to access. 
 
+###SELinux Permissions
 
-### Installation Result
-After successfully executing the above steps you have installed the following components:
-
-* IBM Installation Manager - /opt/IBM/InstallationManager
-* WebSphere Application Server - /opt/IBM/WebSphere/AppServer
+With SELinux enabled on the system, we will require that the following group context be set on the IBM WAS AppServer directory. This would ensure that gear that run under the openshift_rw_file_t group context can have read/write permissions to shared directories under IBM WAS. This does not mean that gears will be able to step on each other in these shared dirs since each gear will have ownership of its own files.
 
 
 3. Customize SELinux Configuration
 ----------------------------------
 Since IBM WebSphere Application is installed outside of the gear's sandbox, you need to customize SELinux permission settings in a way that the installation directory "/opt/IBM/WebSphere/AppServer" can be accessed with read/write.
 
-As a workaround and/or for testing purposes you could also temporarily disable SELinux policy enforcement:
 ```
-setenforce 0
+semanage fcontext -a -t openshift_rw_file_t "/path-to/IBM/WebSphere/AppServer(/.*)?"
 ```
 
 
@@ -107,13 +74,17 @@ setenforce 0
 -------------------------
 The cartridge can be installed as any other  OSE cartridge. However, you MUST have to make sure that WebSphere Application Server has been installed before (as described in the preceding sections):
 
-On each OpenShift node execute the following commands:
+Extract the zipped source code of the WAS cartridge under ```/usr/libexec/openshift/cartridges```
+
+On each OpenShift node where you wish to make this cartridge available execute the following commands:
+
 ```
+
 cd /usr/libexec/openshift/cartridges
-git clone https://github.com/juhoffma/openshift-origin-websphere-cartridge.git
 oo-admin-cartridge --action install --recursive --source /usr/libexec/openshift/cartridges
-oo-admin-ctl-cartridge --activate -c import-node --obsolete
-oo-admin-broker-cache --clear && oo-admin-console-cache --clear
+
+oo-admin-ctl-cartridge --activate -c import-node node.hostname
+
 ```
 
 
@@ -138,7 +109,7 @@ The file permissions of your WebSphere installation must be set to allow non-roo
 
 How profile creation works
 --------------------------
-This cartridge will call `${OPENSHIFT_WEBSPHERE_DIR}/install/bin/manageprofiles.sh` and create a profile with the name ${OPENSHIFT_APP_NAME}. The profile will be created underneath the `profile` directory inside your gears `data` directory.
+This cartridge will call `${OPENSHIFT_WEBSPHERE_DIR}/install/bin/manageprofiles.sh` and create a profile with the name of the OpenShift app that the user created followed by the domain space name. The final format looks like: "APP-NAME-DOMAIN" . The profile will be created underneath the `profile` directory inside your gears `data` directory.
 
 The profile will have security enabled. An admin `username` and a `password` are generated at the time of creation and the `PerfTuningSetting` will be set to development.
 
@@ -183,13 +154,3 @@ OpenShift specific
 * How to expose more than one public port - https://github.com/sosiouxme/diy-extra-port-cartridge/tree/ssl-hack and https://www.openshift.com/content/at-least-one-port-for-external-use-excluding-8080-please
 * WebSphere Liberty Cartridge - https://github.com/WASdev/cloud.openshift.cartridge.wlp
 
-
-D. ToDo's
-=========
-
-- [ ] Work with managed profiles
-- [ ] Support Marker Files for different JDK's
-- [X] Enable Deployments through deployable apps
-- [X] Provide a build lifecycle as with JBoss EAP cartridge
-- [X] Provide an example app as with JBoss EAP cartridge
-- [X] Integrate Server's SysOut log in development tooling
