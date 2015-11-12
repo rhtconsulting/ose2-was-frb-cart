@@ -21,6 +21,7 @@ password=$(generate_password)
 admin_console_url="https://${OPENSHIFT_GEAR_DNS}:${OPENSHIFT_WEBSPHERE_WC_ADMINHOST_SECURE_PROXY_PORT}/ibm/console/logon.jsp"
 
 app_name=`echo ${OPENSHIFT_GEAR_DNS} | cut -d "." -f1`
+app_name="${OPENSHIFT_GEAR_UUID}-${app_name}"
 
 echo "$username" > ${OPENSHIFT_WEBSPHERE_DIR}/env/OPENSHIFT_WEBSPHERE_ADMIN_USERNAME
 echo "$password" > ${OPENSHIFT_WEBSPHERE_DIR}/env/OPENSHIFT_WEBSPHERE_ADMIN_PASSWORD
@@ -44,6 +45,8 @@ ln -s ${OPENSHIFT_WEBSPHERE_INSTALL_LOCATION} ${OPENSHIFT_WEBSPHERE_DIR}/install
 # Create WebSphere Profile
 log_manageprofiles_result=`${OPENSHIFT_WEBSPHERE_DIR}/install/bin/manageprofiles.sh -create -profileName ${app_name} -profilePath ${OPENSHIFT_DATA_DIR}/profile -templatePath ${OPENSHIFT_WEBSPHERE_INSTALL_LOCATION}/profileTemplates/default/ -enableAdminSecurity true -serverName ${servername} -adminUserName ${username} -adminPassword ${password} -hostName ${OPENSHIFT_WEBSPHERE_IP} -applyPerfTuningSetting development -defaultPorts -cellName OpenShiftCell -nodeName OpenShiftNode01 -omitAction deployIVTApplication defaultAppDeployAndConfig`
 log_manageprofiles_abouthisprofile=`cat ${OPENSHIFT_DATA_DIR}/profile/logs/AboutThisProfile.txt`
+
+
 
 # Customize WebSphere Profile
 ${OPENSHIFT_DATA_DIR}/profile/bin/wsadmin.sh -lang jython -conntype NONE -f ${OPENSHIFT_WEBSPHERE_DIR}/usr/wsadmin_customizeWebSphereProfile.py ${OPENSHIFT_GEAR_DNS} ${OPENSHIFT_WEBSPHERE_IP}
