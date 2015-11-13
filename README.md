@@ -79,11 +79,11 @@ Extract the zipped source code of the WAS cartridge under ```/usr/libexec/opensh
 
 You will also need to set the correct SELinux Context on the cartridge so that it is consitent with the rest of the cartrdiges on each node. This file context is:
 
-```system_u:object_r:bin_t:s0```
+``` system_u:object_r:bin_t:s0 ```
 
 To set this context run the following command:
 
-```chcon -R -u system_u /usr/libexec/openshift/cartrdiges/ose2-was-frb-cart``` 
+```chcon -R -u system_u /usr/libexec/openshift/cartrdiges/ose2-was-frb-cart```
 
 On each OpenShift node where you wish to make this cartridge available execute the following commands:
 
