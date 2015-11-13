@@ -67,6 +67,7 @@ Since IBM WebSphere Application is installed outside of the gear's sandbox, you 
 
 ```
 semanage fcontext -a -t openshift_rw_file_t "/path-to/IBM/WebSphere/AppServer(/.*)?"
+restorecon -R -v /path-to/IBM/WebSphere/AppServer/
 ```
 
 
