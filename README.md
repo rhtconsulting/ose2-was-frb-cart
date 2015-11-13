@@ -88,7 +88,6 @@ To set this context run the following command:
 On each OpenShift node where you wish to make this cartridge available execute the following commands:
 
 ```
-
 cd /usr/libexec/openshift/cartridges
 oo-admin-cartridge --action install --recursive --source /usr/libexec/openshift/cartridges
 ```
