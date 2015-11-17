@@ -6,7 +6,7 @@ Description: IBM WebSphere Application Server for Developers provides access to 
 Version: '8.5.5.1'
 License: Commercial
 License-Url: http://www-03.ibm.com/software/products/en/appserv-wasfordev/
-Vendor: hoffmann
+Vendor: frb 
 Cartridge-Version: 0.0.1
 Compatible-Versions: []
 Cartridge-Vendor: frb
