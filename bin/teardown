@@ -7,6 +7,19 @@ case "$1" in
     version="$2"
 esac
 
+pidfile=${OPENSHIFT_WEBSPHERE_PROFILE}/logs/${OPENSHIFT_WEBSPHERE_SERVERNAME}/${OPENSHIFT_WEBSPHERE_SERVERNAME}.pid
+PID=`cat $pidfile`
+
+echo "in teardown ready to wait"
+
+while kill -0 $PID >/dev/null 2>&1
+do
+    # Code to kill process
+    echo "sleeping for 5 seconds"
+    sleep 5
+done
+
+echo "done waiting"
 
 ${OPENSHIFT_WEBSPHERE_DIR}/install/bin/manageprofiles.sh -delete -profileName ${OPENSHIFT_APP_DOMAIN_NAME}
 ${OPENSHIFT_WEBSPHERE_DIR}/install/bin/manageprofiles.sh -validateAndUpdateRegistry 
