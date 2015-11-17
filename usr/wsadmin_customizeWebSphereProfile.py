@@ -5,13 +5,6 @@ OPENSHIFT_GEAR_DNS = sys.argv[0]
 OPENSHIFT_WEBSPHERE_IP = sys.argv[1]
 
 ###############################################################################
-# Enable Monitored Deployment
-###############################################################################
-c1 = AdminConfig.getid('/Cell:OpenShiftCell/')
-md = AdminConfig.showAttribute(c1, "monitoredDirectoryDeployment")
-AdminConfig.modify(md, [['enabled', "true"]])
-
-###############################################################################
 # Virtual Hosts: make sure connections from every hostname are accepted
 ###############################################################################
 vhosts = AdminConfig.list('VirtualHost').split(java.lang.System.getProperty("line.separator"))
