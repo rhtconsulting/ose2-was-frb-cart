@@ -35,7 +35,7 @@ echo "$servername" > ${OPENSHIFT_WEBSPHERE_DIR}/env/OPENSHIFT_WEBSPHERE_SERVERNA
 ln -s ${OPENSHIFT_WEBSPHERE_INSTALL_LOCATION} ${OPENSHIFT_WEBSPHERE_DIR}/install
 
 # Create WebSphere Profile
-log_manageprofiles_result=`${OPENSHIFT_WEBSPHERE_DIR}/install/bin/manageprofiles.sh -create -profileName ${app_name} -enableAdminSecurity false -templatePath ${OPENSHIFT_WEBSPHERE_INSTALL_LOCATION}/profileTemplates/default/ -profilePath ${OPENSHIFT_DATA_DIR}/profile -serverName ${servername} -hostName ${OPENSHIFT_WEBSPHERE_IP} -cellName OpenShiftCell -nodeName OpenShiftNode01`
+log_manageprofiles_result=`${OPENSHIFT_WEBSPHERE_DIR}/install/bin/manageprofiles.sh -create -profileName ${app_name} -profilePath ${OPENSHIFT_DATA_DIR}/profile -templatePath ${OPENSHIFT_WEBSPHERE_INSTALL_LOCATION}/profileTemplates/default/ -enableAdminSecurity false -serverName ${servername} -hostname ${OPENSHIFT_WEBSPHERE_IP} -defaultPorts -cellName OpenShiftCell -nodeName OpenShiftNode01`
 
 log_manageprofiles_abouthisprofile=`cat ${OPENSHIFT_DATA_DIR}/profile/logs/AboutThisProfile.txt`
 
