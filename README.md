@@ -12,7 +12,6 @@ The cartridge currently supports the following features:
 
 * Provisioning of new IBM WebSphere Application Server instance in minutes
 * Full build & Deploy life cycle (as with EAP cartridge)
-* Hot Deployment
 
 Screenshots
 ------------------
@@ -139,12 +138,6 @@ Now manually change port 9043 back to WC_ADMINHOST_SECURE_PROXYPORT and change l
 
 The Admin Console should then appear.
 
-Hot Deployment
---------------
-Hot Deployment is accomplished by using WebSphere's "Monitored Directory Deployment" feature (see official documentation here: http://www-01.ibm.com/support/knowledgecenter/SS7JFU_8.5.5/com.ibm.websphere.express.doc/ae/urun_app_global_deployment.html?lang=en). In order to deploy an EAR just put it in the following directory: `app-root/data/profile/monitoredDeployableApps/servers/server1`.
-
-In addition to this you can also Jenkins as a build server for your application. Just login to your OpenShift Console, select your WebSphere application and click `Enable Jenkins`. This will create a new Jenkins job for your application that will be triggered after each GIT push to your OpenShift instance.
-
 
 C. Reference Information
 ========================
@@ -155,7 +148,6 @@ WebSphere specific
 * Disable Security HTTPS for Web App - http://www-01.ibm.com/support/docview.wss?uid=swg21408274
 * Configure WebSphere to bind to specific IP - http://www-01.ibm.com/support/knowledgecenter/SSAW57_8.5.5/com.ibm.websphere.nd.doc/ae/trun_multiplenic.html?lang=en
 * WebSphere Global Deployment Settings - http://www-01.ibm.com/support/knowledgecenter/SS7JFU_8.5.5/com.ibm.websphere.express.doc/ae/urun_app_global_deployment.html?lang=en
-* WebSphere Auto Deployment - http://www.webspheretools.com/sites/webspheretools.nsf/docs/WebSphere%208%20Auto%20Deploy
 * File Permissions for non-admin install - http://www-01.ibm.com/support/knowledgecenter/SS7JFU_8.5.5/com.ibm.websphere.express.doc/ae/tpro_nonrootpro.html?lang=en
 
 
