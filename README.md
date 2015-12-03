@@ -73,7 +73,8 @@ The followng SELinux policy will also have to be included in the node configurai
 
 The policy should be packaged inside the WASpol.te file:
 
-```module WASpol 1.0;
+```
+module WASpol 1.0;
 
 require {
         type proc_net_t;
@@ -84,7 +85,8 @@ require {
 }
 
 allow openshift_t node_t:tcp_socket node_bind;
-allow openshift_t proc_net_t:file { read open }```
+allow openshift_t proc_net_t:file { read open }
+```
 
 The WASpol.te file should be laid down with root level permissions on the file system. Then the SELinunx policy can be laoded with the command:
 
