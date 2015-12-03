@@ -141,9 +141,8 @@ The file permissions of your WebSphere installation must be set to allow non-roo
 
 How profile creation works
 --------------------------
-This cartridge will call `${OPENSHIFT_WEBSPHERE_DIR}/install/bin/manageprofiles.sh` and create a profile with the name of the OpenShift app that the user created followed by the domain space name. The final format looks like: "APP-NAME-DOMAIN" . The profile will be created underneath the `profile` directory inside your gears `data` directory.
+This cartridge will call `${OPENSHIFT_WEBSPHERE_DIR}/install/bin/manageprofiles.sh` and create a profile with the name of the OpenShift app that the user created followed by the domain space name. The final format looks like: "APPNAME-DOMAIN-FQDN-GEAR_UUID" . The profile will be created underneath the `profile` directory inside your gears `data` directory.
 
-The profile will have security enabled. An admin `username` and a `password` are generated at the time of creation and the `PerfTuningSetting` will be set to development.
 
 
 Access to WebSphere Admin Console
