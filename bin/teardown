@@ -1,25 +1,21 @@
 #!/bin/bash -e
 
 source $OPENSHIFT_CARTRIDGE_SDK_BASH
+set -o
 
 case "$1" in
   -v|--version)
     version="$2"
 esac
 
-pidfile=${OPENSHIFT_WEBSPHERE_PROFILE}/logs/${OPENSHIFT_WEBSPHERE_SERVERNAME}/${OPENSHIFT_WEBSPHERE_SERVERNAME}.pid
-PID=`cat $pidfile`
+client_message "deleting config dir under gear"
 
-echo "in teardown ready to wait"
+#Since we do not call stopServer.sh and have to kill the pid this is required so we can clean up profiles
+#http://blog.webspheretools.com/2012/02/07/uninstall-websphere-8/
+rm -rf /var/lib/openshift/${OPENSHIFT_GEAR_UUID}/app-root/data/profile/config
 
-while kill -0 $PID >/dev/null 2>&1
-do
-    # Code to kill process
-    echo "sleeping for 5 seconds"
-    sleep 5
-done
-
-echo "done waiting"
+client_message "${OPENSHIFT_WEBSPHERE_DIR}/install/bin/manageprofiles.sh -delete -profileName ${OPENSHIFT_APP_DOMAIN_NAME}"
+client_message "${OPENSHIFT_WEBSPHERE_DIR}/install/bin/manageprofiles.sh -validateAndUpdateRegistry"
 
 ${OPENSHIFT_WEBSPHERE_DIR}/install/bin/manageprofiles.sh -delete -profileName ${OPENSHIFT_APP_DOMAIN_NAME}
 ${OPENSHIFT_WEBSPHERE_DIR}/install/bin/manageprofiles.sh -validateAndUpdateRegistry 
