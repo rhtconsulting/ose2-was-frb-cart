@@ -92,7 +92,7 @@ The WASpol.te file should be laid down with root level permissions on the file s
 
 ```semodule -i WASpol.pp```
 
-The SELinux policy should now be laoded.
+The SELinux policy should now be laoded. The WASpol.te file is located under the ```usr``` directory.
 
 
 4. Cartridge Installation

@@ -1,0 +1,13 @@
+module WASpol 1.0;
+
+require {
+        type proc_net_t;
+        type node_t;
+        type openshift_t;
+        class tcp_socket node_bind;
+        class file { read open };
+}
+
+allow openshift_t node_t:tcp_socket node_bind;
+allow openshift_t proc_net_t:file { read open };
+
