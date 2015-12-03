@@ -62,7 +62,7 @@ With SELinux enabled on the system, we will require that the following group con
 
 3. Customize SELinux Configuration
 ----------------------------------
-Since IBM WebSphere Application is installed outside of the gear's sandbox, you need to customize SELinux permission settings in a way that the installation directory "/opt/IBM/WebSphere/AppServer" can be accessed with read/write.
+Since IBM WebSphere Application is installed outside of the gear's sandbox, you need to customize SELinux permission settings in a way that the installation directory "/path-to/AppServer" can be accessed with read/write.
 
 ```
 semanage fcontext -a -t openshift_rw_file_t "/path-to/AppServer(/.*)?"
@@ -128,7 +128,7 @@ Configure a custom installation location for IBM WebSphere Application Server
 This cartridge needs an existing installation of the WebSpehere Application Server on each of your nodes. You need to define the location of the installation through a system wide environment variable
 
 ```
-echo "/opt/IBM/WebSphere/AppServer" > /etc/openshift/env/OPENSHIFT_WEBSPHERE_INSTALL_LOCATION
+echo "/path-to/AppServer" > /etc/openshift/env/OPENSHIFT_WEBSPHERE_INSTALL_LOCATION
 ```
 
 this will make sure that the cartridge finds the necessary components.
