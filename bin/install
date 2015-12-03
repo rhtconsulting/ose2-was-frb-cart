@@ -62,9 +62,8 @@ sed -i "s|{WEBSPHERE_ADMIN_CONSOLE_URL}|${admin_console_url}|g" ${OPENSHIFT_WEBS
 
 # Finalize
 client_result "######################################################################"
-client_result "$log_manageprofiles_result"
-client_result "######################################################################"
-client_result "$log_manageprofiles_abouthisprofile"
+client_result "Profile ${app-name} now exists. More information can be obtained from"
+client_result "your gear's app-root/data/profile/logs/AboutThisProfile.txt file"
 client_result "######################################################################"
 
 echo ''
