@@ -65,9 +65,36 @@ With SELinux enabled on the system, we will require that the following group con
 Since IBM WebSphere Application is installed outside of the gear's sandbox, you need to customize SELinux permission settings in a way that the installation directory "/opt/IBM/WebSphere/AppServer" can be accessed with read/write.
 
 ```
-semanage fcontext -a -t openshift_rw_file_t "/path-to/IBM/WebSphere/AppServer(/.*)?"
-restorecon -R -v /path-to/IBM/WebSphere/AppServer/
+semanage fcontext -a -t openshift_rw_file_t "/path-to/AppServer(/.*)?"
+restorecon -R -v /path-to/AppServer/
 ```
+
+The followng SELinux policy will also have to be included in the node configuraiton installation. This SELinux Policy is required to be able to restart the WAS gears. When it is not there, the WAS gear will not restart, because the Java process is unable to reacquire the ports it needs as SELinux blocks the Java process.
+
+The policy should be packaged inside the WASpol.te file:
+
+```module WASpol 1.0;
+
+require {
+        type proc_net_t;
+        type node_t;
+        type openshift_t;
+        class tcp_socket node_bind;
+        class file { read open };
+}
+
+#============= openshift_t ==============
+
+#!!!! This avc is a constraint violation.  You will need to add an attribute to either the source or target type to make it work.
+#Contraint rule:
+allow openshift_t node_t:tcp_socket node_bind;
+allow openshift_t proc_net_t:file { read open }```
+
+The WASpol.te file should be laid down with root level permissions on the file system. Then the SELinunx policy can be laoded with the command:
+
+```semodule -i WASpol.pp```
+
+The SELinux policy should now be laoded.
 
 
 4. Cartridge Installation
