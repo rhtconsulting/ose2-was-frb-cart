@@ -57,7 +57,6 @@ Endpoints:
 - Private-IP-Name: IP
   Private-Port-Name: WC_ADMINHOST_PORT
   Private-Port: 9060
-  Public-Port-Name: WC_ADMINHOST_PROXY_PORT
 - Private-IP-Name: IP
   Private-Port-Name: WC_ADMINHOST_SECURE_PORT
   Private-Port: 9043
