@@ -83,10 +83,6 @@ require {
         class file { read open };
 }
 
-#============= openshift_t ==============
-
-#!!!! This avc is a constraint violation.  You will need to add an attribute to either the source or target type to make it work.
-#Contraint rule:
 allow openshift_t node_t:tcp_socket node_bind;
 allow openshift_t proc_net_t:file { read open }```
 
