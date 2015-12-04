@@ -53,7 +53,7 @@ The installation of IBM WebSphere on the filesystem can be done either via the I
 ### Non-Root permissions
 In order to create profiles by non-root users, special file permission settings have to be set on your WebSphere installation. Please follow the steps described here: http://www-01.ibm.com/support/knowledgecenter/SS7JFU_8.5.5/com.ibm.websphere.express.doc/ae/tpro_nonrootpro.html?lang=en
 
-We have included the setWebSpherePermissionsForNonRootProfileCreation.sh that sets basic file permissions on the diretories that gears would require to access. 
+We have included the setWebSpherePermissionsForNonRootProfileCreation.sh that sets basic file permissions on the diretories that gears would require to access.
 
 ###SELinux Permissions
 
@@ -156,7 +156,7 @@ rhc ssh <GEAR_NAME>
 export | grep WC_ADMINHOST_SECURE_PROXY_PORT
 ```
 
-Now point your browser to the following URL: `https://<GEAR_DNS>:<WC_ADMINHOST_SECURE_PROXY_PORT>/ibm/console/logon.jsp` and enter your credentials. Unfortunately the Admin Console tries to redirect us to the local port 9043. 
+Now point your browser to the following URL: `https://<GEAR_DNS>:<WC_ADMINHOST_SECURE_PROXY_PORT>/ibm/console/logon.jsp` and enter your credentials. Unfortunately the Admin Console tries to redirect us to the local port 9043.
 
 Now manually change port 9043 back to WC_ADMINHOST_SECURE_PROXYPORT and change login.jsp to login.do so that the URL looks like follows: `https://<GEAR_DNS>:<WC_ADMINHOST_SECURE_PROXY_PORT>/ibm/console/login.do?action=secure`.
 
@@ -180,4 +180,3 @@ OpenShift specific
 * Cartridge Developers Guide - http://openshift.github.io/documentation/oo_cartridge_developers_guide.html
 * How to expose more than one public port - https://github.com/sosiouxme/diy-extra-port-cartridge/tree/ssl-hack and https://www.openshift.com/content/at-least-one-port-for-external-use-excluding-8080-please
 * WebSphere Liberty Cartridge - https://github.com/WASdev/cloud.openshift.cartridge.wlp
-
