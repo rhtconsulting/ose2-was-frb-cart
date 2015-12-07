@@ -41,7 +41,7 @@ We have included the `setWebSpherePermissionsForNonRootProfileCreation.sh` that 
 === SELinux Permissions
 
 With SELinux enabled on the system, we will require that the following group context be set on the IBM WAS AppServer directory.
-This would ensure that gear that run under the openshift_rw_file_t group context can have read/write permissions to shared directories under IBM WAS. This does not mean
+This would ensure that gear that run under the `openshift_rw_file_t` group context can have read/write permissions to shared directories under IBM WAS. This does not mean
 that gears will be able to step on each other in these shared directories since each gear will have ownership of its own files.
 
 ==== Set SELinux Context for WebSphere
@@ -58,7 +58,7 @@ restorecon -R -v /path-to/AppServer/
 The following SELinux policy will also have to be included in the node configuration installation. This SELinux Policy is required to be able to restart the WAS gears.
 When it is not there, the WAS gear will not restart, because the Java process is unable to reacquire the ports it needs as SELinux blocks the Java process.
 
-The policy should be packaged inside the WASpol.te file:
+The policy should be packaged inside the `WASpol.te` file:
 
 ```
 module WASpol 1.0;
@@ -87,13 +87,13 @@ To generate the `WASpol.pp` file a few commands must be run to compile the polic
 
 Generate the `WASpol.mod` file with the command:
 
-`checkmodule -M -m -o /path-to/WASpol.mod postfixlocal.te`
+`checkmodule -M -m -o /path-to/WASpol.mod WASpol.te`
 
 Generate the `WASpol.pp` file with the command:
 
 `semodule_package -o WASpol.pp -m WASpol.mod`
 
-Load the WASpol.pp policy:
+Load the `WASpol.pp` policy:
 
 `semodule -i WASpol.pp`
 
