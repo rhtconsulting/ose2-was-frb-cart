@@ -2,7 +2,7 @@
 
 = A. Synopsis
 
-This project represents the source code of the WebSphere 8.5.5.1 OpenShift Enterprise cartridge. It is meant to be loaded into OpenShift from source code.
+The purpose of this document is to present the guidance to install and configure WebSphere 8.5.5.1 OpenShift Enterprise V2.2 cartridge. It is meant to be loaded into OpenShift from source code.
 There are a few installation steps that are outside OpenShift regarding the installation of IBM's WebSphere but also directory permissions and SELinux policy enablement.
 
 The cartridge currently supports the following features:
