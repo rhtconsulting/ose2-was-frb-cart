@@ -30,4 +30,40 @@ for vhost in vhosts:
                   #AdminConfig.modify("HostAlias", vhost, [["hostname", "HostAlias_5" ], ["port", OPENSHIFT_WEBSPHERE_WC_ADMINHOST_SECURE_PROXY_PORT]])
                   AdminConfig.modify(endpoint, [['port', OPENSHIFT_WEBSPHERE_WC_ADMINHOST_SECURE_PROXY_PORT]])
 ###############################################################################
+
+###############################################################################
+# Configure WebSphere to use a specific IP address
+# http://www-01.ibm.com/support/knowledgecenter/SSAW57_8.5.5/com.ibm.websphere.nd.doc/ae/trun_multiplenic.html?lang=en
+###############################################################################
+# Customize ORB service
+orb = AdminConfig.list('ObjectRequestBroker')
+orbPropertiesString = AdminConfig.showAttribute(orb, "properties")
+orbPropertiesList = orbPropertiesString[1:len(orbPropertiesString)-1].split(" ")
+# Remove specific existing properties
+for orbProperty in orbPropertiesList:
+        name = AdminConfig.showAttribute(orbProperty, "name")
+        if name == "com.ibm.CORBA.LocalHost":
+                AdminConfig.remove(orbProperty)
+        elif name == "com.ibm.ws.orb.transport.useMultiHome":
+                AdminConfig.remove(orbProperty)
+
+# Add new properties
+attr = []
+attr.append([['name','com.ibm.CORBA.LocalHost'],['required','true'],['value', OPENSHIFT_WEBSPHERE_IP]])
+AdminConfig.modify(orb, [['properties', attr]])
+attr = []
+attr.append([['name','com.ibm.ws.orb.transport.useMultiHome'],['required','false'],['value','false']])
+AdminConfig.modify(orb, [['properties', attr]])
+
+# Customize JVM custom properties
+jvm = AdminConfig.list('JavaVirtualMachine')
+jvmPropertiesString = AdminConfig.showAttribute(jvm, "systemProperties")
+jvmPropertiesList = jvmPropertiesString[1:len(jvmPropertiesString)-1].split(" ")
+# Remove specific existing properties
+for jvmProperty in jvmPropertiesList:
+        name = AdminConfig.showAttribute(jvmProperty, "name")
+        if name == "com.ibm.websphere.network.useMultiHome":
+                AdminConfig.remove(jvmProperty)
+
 AdminConfig.save()
+
