@@ -75,11 +75,31 @@ allow openshift_t node_t:tcp_socket node_bind;
 allow openshift_t proc_net_t:file { read open }
 ```
 
-The WASpol.te file should be laid down with root level permissions on the file system. Then the SELinux policy can be loaded with the command:
+The `WASpol.te` file should be laid down with root level permissions on the file system and then compiled into a `.pp` file as per the below.
 
-semodule -i WASpol.pp
+The `.pp` file is the SELinux binary policy. The SELinux policy can then be loaded with the command. The `WASpol.pp` file is included for convenience in the cartridge.
 
-The SELinux policy should now be loaded. The WASpol.te file is located under the usr directory.
+`semodule -i WASpol.pp`
+
+The SELinux policy should now be loaded. The `WASpol.te` file is located under the usr directory.
+
+To generate the `WASpol.pp` file a few commands must be run to compile the policy into binaries. The commands are:
+
+Generate the `WASpol.mod` file with the command:
+
+`checkmodule -M -m -o /path-to/WASpol.mod postfixlocal.te`
+
+Generate the `WASpol.pp` file with the command:
+
+`semodule_package -o WASpol.pp -m WASpol.mod`
+
+Load the WASpol.pp policy:
+
+`semodule -i WASpol.pp`
+
+To verify that the policy has been loaded correctly check that it exists with the command:
+
+`semodule -l | grep WASpol`
 
 <<<
 = C. Cartridge Installation
