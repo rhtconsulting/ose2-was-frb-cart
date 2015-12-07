@@ -64,6 +64,17 @@ for jvmProperty in jvmPropertiesList:
         name = AdminConfig.showAttribute(jvmProperty, "name")
         if name == "com.ibm.websphere.network.useMultiHome":
                 AdminConfig.remove(jvmProperty)
+# Add new properties
+attr = []
+attr.append([['name','com.ibm.websphere.network.useMultiHome'],['required','false'],['value', 'false']])
+AdminConfig.modify(jvm, [['systemProperties', attr]])
+
+# Bind all ports to GEAR IP
+endpoints = AdminConfig.list('EndPoint').split(java.lang.System.getProperty("line.separator"))
+for endpoint in endpoints:
+	AdminConfig.modify(endpoint, '[[host ' + OPENSHIFT_WEBSPHERE_IP + ']]')
+
+###############################################################################
 
 AdminConfig.save()
 
