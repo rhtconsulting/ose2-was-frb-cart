@@ -27,7 +27,7 @@ for vhost in vhosts:
                 #print endpoint
                 if "HostAlias_5"  == split_endpoint:
                   print "%s" %(AdminConfig.showAttribute(endpoint, 'port'));
-
-                  AdminConfig.modify("HostAlias", vhost, [["hostname", "HostAlias_5" ], ["port", OPENSHIFT_WEBSPHERE_WC_ADMINHOST_SECURE_PROXY_PORT]])
+                  #AdminConfig.modify("HostAlias", vhost, [["hostname", "HostAlias_5" ], ["port", OPENSHIFT_WEBSPHERE_WC_ADMINHOST_SECURE_PROXY_PORT]])
+                  AdminConfig.modify(endpoint, [['port', OPENSHIFT_WEBSPHERE_WC_ADMINHOST_SECURE_PROXY_PORT]])
 ###############################################################################
 AdminConfig.save()

@@ -41,7 +41,7 @@ log_manageprofiles_abouthisprofile=`cat ${OPENSHIFT_DATA_DIR}/profile/logs/About
 
 
 # Customize WebSphere Profile
-${OPENSHIFT_DATA_DIR}/profile/bin/wsadmin.sh -lang jython -conntype NONE -f ${OPENSHIFT_WEBSPHERE_DIR}/usr/wsadmin_customizeWebSphereProfile.py ${OPENSHIFT_GEAR_DNS} ${OPENSHIFT_WEBSPHERE_IP}
+${OPENSHIFT_DATA_DIR}/profile/bin/wsadmin.sh -lang jython -conntype NONE -f ${OPENSHIFT_WEBSPHERE_DIR}/usr/wsadmin_customizeWebSphereProfile.py ${OPENSHIFT_WEBSPHERE_IP} ${OPENSHIFT_WEBSPHERE_WC_ADMINHOST_SECURE_PROXY_PORT}
 
 # Setup logging
 ln -s ${OPENSHIFT_DATA_DIR}/profile/logs/${servername}/SystemOut.log ${OPENSHIFT_LOG_DIR}/SystemOut.log

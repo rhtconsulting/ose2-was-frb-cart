@@ -117,15 +117,13 @@ function start {
     echo "Starting ${OPENSHIFT_WEBSPHERE_SERVERNAME} using: startServer.sh ${OPENSHIFT_WEBSPHERE_SERVERNAME}"
     ${OPENSHIFT_WEBSPHERE_PROFILE}/bin/startServer.sh ${OPENSHIFT_WEBSPHERE_SERVERNAME}
     
-    # Trigger initial deployment after profile creation
-    touch -cf $OPENSHIFT_WEBSPHERE_DEPLOYMENT_DIR/ROOT.war
   else
     echo "Websphere already running." 1>&2
   fi
 }
 
 function stop {
-   for task in $(ps -u ${OPENSHIFT_GEAR_UUID})
+   for task in $(ps --no-headers -u ${OPENSHIFT_GEAR_UUID})
     do
         kill -15 $task
         client_message "killing nicely - $task"
@@ -133,7 +131,7 @@ function stop {
 
     sleep 10
 
-    for task in $(ps -u ${OPENSHIFT_GEAR_UUID})
+    for task in $(ps --no-headers -u ${OPENSHIFT_GEAR_UUID})
     do
         kill -9 $task
         client_message "killing not nicely -  $task"
