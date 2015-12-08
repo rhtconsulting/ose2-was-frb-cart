@@ -23,7 +23,7 @@ There are two ways to create a WebSphere gear in OpenShift 2:
 
 The following sections will present how each of these methods can be used to create a WebSphere gear in OpenShift 2
 
-== Creating WebSphere Gear Via the OpenShift Console:
+== Creating WebSphere Application Via the OpenShift Console:
 
 :sectnums:
 The steps to create a WebSphere gear via the OpenShift console are very straightforward:
@@ -99,3 +99,33 @@ Now manually change port `9043` back to `WC_ADMINHOST_SECURE_PROXYPORT` and chan
 `https://<GEAR_DNS>:<WC_ADMINHOST_SECURE_PROXY_PORT>/ibm/console/login.do?action=secure`.
 
 The Admin Console should then appear.
+
+== Creating WebSphere Application with OpenShift Red Hat Client Tools
+
+The second mechanism by why a WebSphere application may be created is via the OpenShift Red Hat client tools that could be installed
+on your computer. The commands below assume that a domain space *test* has already been created.
+
+===  Creating WebSphere Application without a Database Add-On
+
+In a terminal window run the below command to create the application *myapp* with the WebSphere cartridge *frb-websphere-8.5.5.1*
+
+`rhc app create myapp frb-websphere-8.5.5.1`
+
+The output below should be seen:
+
+```
+[ose@node01 ~]$ rhc app create myapp frb-websphere-8.5.5.1
+Application Options
+-------------------
+Domain:     test
+Cartridges: frb-websphere-8.5.5.1
+Gear Size:  default
+Scaling:    no
+
+Creating application 'myapp' ...
+```
+
+===  Creating WebSphere Application with a Database Add-On
+
+In the previous section we did not include a database for our application. In this section we demonstrate how this can be done
+from the command line... To be continued

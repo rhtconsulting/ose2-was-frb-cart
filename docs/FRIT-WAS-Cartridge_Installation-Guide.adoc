@@ -13,6 +13,7 @@ The cartridge currently supports the following features:
 <<<
 = B. Installation
 
+:sectnums:
 == Setup OSE Environment
 
 The setup of the OSE Environment can be accomplished as per your usual way of deploying broker and nodes. This could be via the OSE install script, or any other CM tools like Puppet and Ansible
