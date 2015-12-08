@@ -68,7 +68,34 @@ and resources are released back to the system.
 [[img-application-form]]
 image::../usr/doc/openshift-application-form.png[caption="Figure 4: ", title="OpenShift Application Form"]
 
-=== Create the Application
+=== Create the Application & Access the WebSphere Console
 
 Once you are done completing the form above, click on *"Create Application"* button. The page will show that it is "working". It will take about
 a few minutes before the WebSphere gear is created.
+
+The OpenShift console will then echo out the details of the WebSphere Administration Console as per the image below.
+
+###put image here###
+
+The WebSphere Administration Console can be access in two ways:
+
+* Option 1: Preferred - After you have created your gear, do an `rhc port-forward <GEAR_NAME>`
+and open a browser with the following URL:
+
+```
+  https://<YOUR_LOCAL_IP>:9043/ibm/console
+```
+* Option 2: The Admin Console is also exposed via a separate external port that can be determined as follows:
+
+```
+  rhc ssh <GEAR_NAME>
+  export | grep WC_ADMINHOST_SECURE_PROXY_PORT
+```
+[%hardbreaks]
+Now point your browser to the following URL:
+`https://<GEAR_DNS>:<WC_ADMINHOST_SECURE_PROXY_PORT>/ibm/console/logon.jsp` and enter your credentials. Unfortunately the Admin Console tries to redirect us to the local port `9043`.
+[%hardbreaks]
+Now manually change port `9043` back to `WC_ADMINHOST_SECURE_PROXYPORT` and change `login.jsp` to `login.do` so that the URL looks like follows:
+`https://<GEAR_DNS>:<WC_ADMINHOST_SECURE_PROXY_PORT>/ibm/console/login.do?action=secure`.
+
+The Admin Console should then appear.
