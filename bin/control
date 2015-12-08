@@ -124,17 +124,6 @@ function start {
 
 function stop {
 
-   count=$(ps --no-headers -u ${OPENSHIFT_GEAR_UUID}  -o pid --sort=lstart | wc -l) 
-   rightcount=$((${count}-1))
-
-   for task in $(ps --no-headers -u ${OPENSHIFT_GEAR_UUID} -o pid --sort=lstart | head -${rightcount} )
-    do
-        kill -15 $task
-        client_message "killing nicely - $task"
-    done
-
-    sleep 10
-
     count=$(ps --no-headers -u ${OPENSHIFT_GEAR_UUID}  -o pid --sort=lstart | wc -l)
     rightcount=$((${count}-1)) 
     
