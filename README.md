@@ -15,18 +15,13 @@ The cartridge currently supports the following features:
 
 Screenshots
 ------------------
-![1. Create new Gear](./usr/doc/01_ose_create_new_gear.png)
+![1. Create new Gear](./usr/doc/was-admin-console.png)
 
-![2. Select WebSphere Application Server Cartridge](./usr/doc/02_ose_create_new_was_cart.png)
+![2. Login To Console](./usr/doc/login-to-console.png)
 
-![3. Cartridge creation is finished](./usr/doc/03_ose_create_new_was_cart_finished.png)
+![3. Select WebSphere Application Server Cartridge](./usr/doc/openshift-cartridges-menu.png)
 
-![4. Overview of newly created application](./usr/doc/04_was_application_overview.png)
-
-![5. View of created sample application](./usr/doc/05_application_demo.png)
-
-![6. Demo of WebSphere Admin Console](./usr/doc/06_was_admin_console.png)
-
+![4. OpenShift Application Form](./usr/doc/openshift-application-form.png)
 
 B. Installation
 ===============
