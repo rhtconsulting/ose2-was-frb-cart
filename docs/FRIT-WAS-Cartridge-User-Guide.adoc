@@ -1,6 +1,24 @@
-= FRIT WebSphere Cartridge User Guide
+= {subject}: PREPARED FOR - {customer}
+:subject: WebSphere Cartridge Installation Guide
+:description: WebSphere OpenShift 2 Cartridge Installation
+:doctype: book
+:confidentiality: Confidential
+:customer:  FRIT
+:listing-caption: Listing
+:toc:
+:toclevels: 6
+:sectnums:
+:chapter-label:
+:icons: font
+ifdef::backend-pdf[]
+:pdf-page-size: A4
+:title-page-background-image: image:../usr/doc/header.jpeg[pdfwidth=8.0in,align=center]
+:pygments-style: tango
+//:source-highlighter: pygments
+:source-highlighter: coderay
+endif::[]
 
-= A. Synopsis
+== A. Synopsis
 
 The purpose of this document is to present how OpenShift 2 users can interact with the WebSphere 8.5.5.1 OpenShift Enterprise V2.2 cartridge. By the end of this document
 users that have the WebSphere cartridge enabled for them will be able to provision WebSphere servers in a matter of minutes.
@@ -14,7 +32,7 @@ image::../usr/doc/was-admin-console.png[caption="Figure 1: ", title="WebSphere A
 
 <<<
 
-= B. OpenShift 2 WebSphere Gear Creation:
+== OpenShift 2 WebSphere Gear Creation:
 
 There are two ways to create a WebSphere gear in OpenShift 2:
 
@@ -23,18 +41,18 @@ There are two ways to create a WebSphere gear in OpenShift 2:
 
 The following sections will present how each of these methods can be used to create a WebSphere gear in OpenShift 2
 
-== Creating WebSphere Application Via the OpenShift Console:
+=== Creating WebSphere Application Via the OpenShift Console:
 
 :sectnums:
 The steps to create a WebSphere gear via the OpenShift console are very straightforward:
 
-=== Login to the OpenShift Console as per the image below:
+==== Login to the OpenShift Console as per the image below:
 
 NOTE: OpenShift can be configured with various identity stores. Check with your organization's administrator to find out your login credentials.
 [[img-console-login]]
 image::../usr/doc/login-to-console.png[caption="Figure 2: ", title="OpenShift Login Page"]
 
-=== Click on "Create Your First Application Now"
+==== Click on "Create Your First Application Now"
 
 NOTE: This step assumes that the user has already created a namespace, and has setup his public key in his OpenShift account.
 
@@ -45,7 +63,7 @@ NOTE: OpenShift can be configured with various identity stores. Check with your 
 [[img-cartridges-menu]]
 image::../usr/doc/openshift-cartridges-menu.png[caption="Figure 3: ", title="OpenShift Available Cartridges Menu"]
 
-=== Complete the Application Form
+==== Complete the Application Form
 
 On the next page you will be presented with a form that has a few fields to be completed:
 
@@ -68,7 +86,7 @@ and resources are released back to the system.
 [[img-application-form]]
 image::../usr/doc/openshift-application-form.png[caption="Figure 4: ", title="OpenShift Application Form"]
 
-=== Create the Application & Access the WebSphere Console
+==== Create the Application & Access the WebSphere Console
 
 Once you are done completing the form above, click on *"Create Application"* button. The page will show that it is "working". It will take about
 a few minutes before the WebSphere gear is created.
@@ -100,12 +118,12 @@ Now manually change port `9043` back to `WC_ADMINHOST_SECURE_PROXYPORT` and chan
 
 The Admin Console should then appear.
 
-== Creating WebSphere Application with OpenShift Red Hat Client Tools
+=== Creating WebSphere Application with OpenShift Red Hat Client Tools
 
 The second mechanism by why a WebSphere application may be created is via the OpenShift Red Hat client tools that could be installed
 on your computer. The commands below assume that a domain space *test* has already been created.
 
-===  Creating WebSphere Application without a Database Add-On
+====  Creating WebSphere Application without a Database Add-On
 
 In a terminal window run the below command to create the application *myapp* with the WebSphere cartridge *frb-websphere-8.5.5.1*
 
@@ -125,7 +143,7 @@ Scaling:    no
 Creating application 'myapp' ...
 ```
 
-===  Creating WebSphere Application with a Database Add-On
+====  Creating WebSphere Application with a Database Add-On
 
 In the previous section we did not include a database for our application. In this section we demonstrate how this can be done
 from the command line... To be continued
