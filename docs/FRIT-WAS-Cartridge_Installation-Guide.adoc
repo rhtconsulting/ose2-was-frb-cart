@@ -1,6 +1,24 @@
-= FRIT WebSphere Cartridge Installation Guide
+= {subject}: PREPARED FOR - {customer}
+:subject: FRIT WebSphere Cartridge Installation Guide
+:description: WebSphere OpenShift 2 Cartridge Installation
+:doctype: book
+:confidentiality: Confidential
+:customer:  FRIT
+:listing-caption: Listing
+:toc:
+:toclevels: 6
+:sectnums:
+:chapter-label:
+:icons: font
+ifdef::backend-pdf[]
+:pdf-page-size: A4
+:title-page-background-image: image:../usr/doc/header.jpeg[pdfwidth=8.0in,align=center]
+:pygments-style: tango
+//:source-highlighter: pygments
+:source-highlighter: coderay
+endif::[]
 
-= A. Synopsis
+== Synopsis
 
 The purpose of this document is to present the guidance to install and configure WebSphere 8.5.5.1 OpenShift Enterprise V2.2 cartridge. It is meant to be loaded into OpenShift from source code.
 There are a few installation steps that are outside OpenShift regarding the installation of IBM's WebSphere but also directory permissions and SELinux policy enablement.
@@ -10,16 +28,13 @@ The cartridge currently supports the following features:
 * Provisioning of new IBM WebSphere Application Server instance in minutes
 * Full build & Deploy life cycle (as with EAP cartridge)
 
-<<<
-= B. Installation
+== Installation
 
-:sectnums:
-== Setup OSE Environment
+=== Setup OSE Environment
 
 The setup of the OSE Environment can be accomplished as per your usual way of deploying broker and nodes. This could be via the OSE install script, or any other CM tools like Puppet and Ansible
 
-
-== WebSphere Application Server Installation
+=== WebSphere Application Server Installation
 
 [%hardbreaks]
 NOTE: In contradiction to the deployment model of other cartridges (that includes all binaries of a certain technology), we've decided not to put the installation files into the cartridge.
@@ -27,25 +42,25 @@ The reasons for these decisions are:
 * IBM WebSphere Application Server Binaries are very large (around 2-3 GB)
 * Installation process for the binaries takes takes a long time (up to 15 minutes according to the computing resources)
 
-=== Binary Installation
+==== Binary Installation
 The installation of IBM WebSphere on the filesystem can be done either via the IBM agent installer or any other means that are currently employed.
 The main thing to note here is that profile creation inside the IBM WAS installation would need to be enabled to allow non root users to create them.
 That is because each gear in OSE will create its own profile and each gear runs as its own UUID and not as root.
 
-=== Non-Root permissions
+==== Non-Root permissions
 In order to create profiles by non-root users, special file permission settings have to be set on your WebSphere installation. Please follow the steps described here:
 
 http://www-01.ibm.com/support/knowledgecenter/SS7JFU_8.5.5/com.ibm.websphere.express.doc/ae/tpro_nonrootpro.html?lang=en[WebSphere Non Root Permissions Configuration]
 
 We have included the `setWebSpherePermissionsForNonRootProfileCreation.sh` that sets basic file permissions on the directories that gears would require to access.
 
-=== SELinux Permissions
+==== SELinux Permissions
 
 With SELinux enabled on the system, we will require that the following group context be set on the IBM WAS AppServer directory.
 This would ensure that gear that run under the `openshift_rw_file_t` group context can have read/write permissions to shared directories under IBM WAS. This does not mean
 that gears will be able to step on each other in these shared directories since each gear will have ownership of its own files.
 
-==== Set SELinux Context for WebSphere
+===== Set SELinux Context for WebSphere
 
 Since IBM WebSphere Application is installed outside of the gear's sandbox, you need to customize SELinux permission settings in a way that the installation directory "/path-to/AppServer" can be accessed with read/write.
 
@@ -54,7 +69,7 @@ semanage fcontext -a -t openshift_rw_file_t "/path-to/AppServer(/.*)?"
 restorecon -R -v /path-to/AppServer/
 ```
 
-==== Create and Load WASpol.te
+===== Create and Load WASpol.te
 
 The following SELinux policy will also have to be included in the node configuration installation. This SELinux Policy is required to be able to restart the WAS gears.
 When it is not there, the WAS gear will not restart, because the Java process is unable to reacquire the ports it needs as SELinux blocks the Java process.
@@ -102,8 +117,7 @@ To verify that the policy has been loaded correctly check that it exists with th
 
 `semodule -l | grep WASpol`
 
-<<<
-= C. Cartridge Installation
+== Cartridge Installation
 
 The cartridge can be installed as any other  OSE cartridge. However, you MUST have to make sure that WebSphere Application Server has been installed before (as described in the preceding sections):
 
@@ -138,18 +152,16 @@ echo "/path-to/AppServer" > /etc/openshift/env/OPENSHIFT_WEBSPHERE_INSTALL_LOCAT
 
 The cartridge keys off this global OpenShift environment variable to know where the WAS binaries are located so that it may create a profile for each gear created.
 
+== Administration and configuration
 
-<<<
-= D. Administration and configuration
-
-== How profile creation works
+=== How profile creation works
 
 This cartridge will call `${OPENSHIFT_WEBSPHERE_DIR}/install/bin/manageprofiles.sh` and create a profile with the name of the OpenShift app that the user created followed by the domain space name.
 The final format looks like: "APPNAME-DOMAIN-FQDN-GEAR_UUID" . The profile will be created underneath the `profile` directory inside your gears `data` directory.
 
 It is very important for the non-root users to be configured to be allowed the necessary permissions to create profiles so that profile creation from within the cartridge can occur.
 
-== Access to WebSphere Admin Console
+=== Access to WebSphere Admin Console
 
 The WebSphere Administration Console can be access in two ways:
 
@@ -175,8 +187,7 @@ Now manually change port `9043` back to `WC_ADMINHOST_SECURE_PROXYPORT` and chan
 
 The Admin Console should then appear.
 
-<<<
-= E. Reference Information
+== Reference Information
 
 *WebSphere*
 
