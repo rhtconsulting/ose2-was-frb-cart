@@ -1,6 +1,6 @@
 = {subject}: PREPARED FOR - {customer}
-:subject: WebSphere Cartridge Installation Guide
-:description: WebSphere OpenShift 2 Cartridge Installation
+:subject: WebSphere Cartridge User Guide
+:description: WebSphere OpenShift 2 Cartridge User Guide
 :doctype: book
 :confidentiality: Confidential
 :customer:  FRIT
