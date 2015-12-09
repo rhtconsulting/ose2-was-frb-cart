@@ -14,7 +14,6 @@ ifdef::backend-pdf[]
 :pdf-page-size: A4
 :title-page-background-image: image:../usr/doc/header.jpeg[pdfwidth=8.0in,align=center]
 :pygments-style: tango
-//:source-highlighter: pygments
 :source-highlighter: coderay
 endif::[]
 
@@ -54,7 +53,7 @@ http://www-01.ibm.com/support/knowledgecenter/SS7JFU_8.5.5/com.ibm.websphere.exp
 
 We have included the `setWebSpherePermissionsForNonRootProfileCreation.sh` that sets basic file permissions on the directories that gears would require to access.
 
-==== SELinux Permissions
+==== SELinux Permissions & IPv6
 
 With SELinux enabled on the system, we will require that the following group context be set on the IBM WAS AppServer directory.
 This would ensure that gear that run under the `openshift_rw_file_t` group context can have read/write permissions to shared directories under IBM WAS. This does not mean
@@ -69,53 +68,26 @@ semanage fcontext -a -t openshift_rw_file_t "/path-to/AppServer(/.*)?"
 restorecon -R -v /path-to/AppServer/
 ```
 
-===== Create and Load WASpol.te
+===== Disable IPv6
 
-The following SELinux policy will also have to be included in the node configuration installation. This SELinux Policy is required to be able to restart the WAS gears.
-When it is not there, the WAS gear will not restart, because the Java process is unable to reacquire the ports it needs as SELinux blocks the Java process.
+If there are no requirements to use IPv6 on your system, then we recommend disabling it. Keeping IPv6 enabled in OpenShift 2 will cause the WebSphere gears to not be
+restarted properly, and in some scenarios, not restarted at all. If IPv6 is a requirement then we recommend you work with Red Hat support to create an SELinux policy that accomodates this use case.
 
-The policy should be packaged inside the `WASpol.te` file:
+Disabling IPv6 is a three step process:
 
-```
-module WASpol 1.0;
+. Create a file `/etc/modprobe.d/ipv6.conf` with the following contents:
 
-require {
-        type proc_net_t;
-        type node_t;
-        type openshift_t;
-        class tcp_socket node_bind;
-        class file { read open };
-}
+  `options ipv6 disable=1`
 
-allow openshift_t node_t:tcp_socket node_bind;
-allow openshift_t proc_net_t:file { read open }
-```
+[start=2]
+. For completeness, it is a good idea to configure the ip6tables service not to start at boot by issuing the following command:
 
-The `WASpol.te` file should be laid down with root level permissions on the file system and then compiled into a `.pp` file as per the below.
+  `chkconfig ip6tables off`
 
-The `.pp` file is the SELinux binary policy. The SELinux policy can then be loaded with the command. The `WASpol.pp` file is included for convenience in the cartridge.
+[start=3]
 
-`semodule -i WASpol.pp`
+. Safe reboot the box
 
-The SELinux policy should now be loaded. The `WASpol.te` file is located under the usr directory.
-
-To generate the `WASpol.pp` file a few commands must be run to compile the policy into binaries. The commands are:
-
-Generate the `WASpol.mod` file with the command:
-
-`checkmodule -M -m -o /path-to/WASpol.mod WASpol.te`
-
-Generate the `WASpol.pp` file with the command:
-
-`semodule_package -o WASpol.pp -m WASpol.mod`
-
-Load the `WASpol.pp` policy:
-
-`semodule -i WASpol.pp`
-
-To verify that the policy has been loaded correctly check that it exists with the command:
-
-`semodule -l | grep WASpol`
 
 == Cartridge Installation
 

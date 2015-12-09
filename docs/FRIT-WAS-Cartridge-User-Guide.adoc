@@ -14,7 +14,6 @@ ifdef::backend-pdf[]
 :pdf-page-size: A4
 :title-page-background-image: image:../usr/doc/header.jpeg[pdfwidth=8.0in,align=center]
 :pygments-style: tango
-//:source-highlighter: pygments
 :source-highlighter: coderay
 endif::[]
 
