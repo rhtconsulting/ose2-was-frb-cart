@@ -124,16 +124,28 @@ function start {
 
 function stop {
 
-    count=$(ps --no-headers -u ${OPENSHIFT_GEAR_UUID}  -o pid --sort=lstart | wc -l)
-    rightcount=$((${count}-1)) 
-    
-    for task in $(ps --no-headers -u ${OPENSHIFT_GEAR_UUID} -o pid --sort=lstart | head -${rightcount}  )
-    do
-        kill -9 $task
-        client_message "killing not nicely -  $task"
-    done
+echo '>>> Processing action "STOP"...'
+  if is_running; then
+    pidfile=${OPENSHIFT_WEBSPHERE_PROFILE}/logs/${OPENSHIFT_WEBSPHERE_SERVERNAME}/${OPENSHIFT_WEBSPHERE_SERVERNAME}.pid
 
-    client_message "Stopped WebSphere Gear Tasks"
+    if [ -f $pidfile ]; then
+      pid=$( /bin/cat $pidfile )
+      echo "Stopping WebSphere process with PID ${pid}..."
+      /bin/kill $pid
+      ret=$?
+      if [ $ret -eq 0 ]; then
+        TIMEOUT="$STOPTIMEOUT"
+        while [ $TIMEOUT -gt 0 ] && [ -f "$pidfile" ]
+        do
+          /bin/kill -0 "$pid" >/dev/null 2>&1 || break
+          sleep 1
+          let TIMEOUT=${TIMEOUT}-1
+        done
+      fi
+    else
+      echo "Websphere already stopped." 1>&2
+    fi
+  fi
 
 }
 
