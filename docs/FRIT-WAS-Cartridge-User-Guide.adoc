@@ -18,7 +18,7 @@ ifdef::backend-pdf[]
 :source-highlighter: coderay
 endif::[]
 
-== A. Synopsis
+== Synopsis
 
 The purpose of this document is to present how OpenShift 2 users can interact with the WebSphere 8.5.5.1 OpenShift Enterprise V2.2 cartridge. By the end of this document
 users that have the WebSphere cartridge enabled for them will be able to provision WebSphere servers in a matter of minutes.
@@ -32,7 +32,7 @@ image::../usr/doc/was-admin-console.png[caption="Figure 1: ", title="WebSphere A
 
 <<<
 
-== OpenShift 2 WebSphere Gear Creation:
+== OpenShift 2 WebSphere Gear Creation
 
 There are two ways to create a WebSphere gear in OpenShift 2:
 
@@ -41,12 +41,12 @@ There are two ways to create a WebSphere gear in OpenShift 2:
 
 The following sections will present how each of these methods can be used to create a WebSphere gear in OpenShift 2
 
-=== Creating WebSphere Application Via the OpenShift Console:
+=== Creating WebSphere Application Via the OpenShift Console
 
 :sectnums:
 The steps to create a WebSphere gear via the OpenShift console are very straightforward:
 
-==== Login to the OpenShift Console as per the image below:
+==== Login to the OpenShift Console
 
 NOTE: OpenShift can be configured with various identity stores. Check with your organization's administrator to find out your login credentials.
 [[img-console-login]]
