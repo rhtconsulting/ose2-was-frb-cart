@@ -55,8 +55,14 @@ We have included the setWebSpherePermissionsForNonRootProfileCreation.sh that se
 With SELinux enabled on the system, we will require that the following group context be set on the IBM WAS AppServer directory. This would ensure that gear that run under the openshift_rw_file_t group context can have read/write permissions to shared directories under IBM WAS. This does not mean that gears will be able to step on each other in these shared dirs since each gear will have ownership of its own files.
 
 
-3. Customize SELinux Configuration
-----------------------------------
+3.SELinux Permissions & IPv6
+
+With SELinux enabled on the system, we will require that the following group context be set on the IBM WAS AppServer directory.
+This would ensure that gear that run under the `openshift_rw_file_t` group context can have read/write permissions to shared directories under IBM WAS. This does not mean
+that gears will be able to step on each other in these shared directories since each gear will have ownership of its own files.
+
+===== Set SELinux Context for WebSphere
+
 Since IBM WebSphere Application is installed outside of the gear's sandbox, you need to customize SELinux permission settings in a way that the installation directory "/path-to/AppServer" can be accessed with read/write.
 
 ```
@@ -64,30 +70,23 @@ semanage fcontext -a -t openshift_rw_file_t "/path-to/AppServer(/.*)?"
 restorecon -R -v /path-to/AppServer/
 ```
 
-The followng SELinux policy will also have to be included in the node configuraiton installation. This SELinux Policy is required to be able to restart the WAS gears. When it is not there, the WAS gear will not restart, because the Java process is unable to reacquire the ports it needs as SELinux blocks the Java process.
+===== Disable IPv6
 
-The policy should be packaged inside the WASpol.te file:
+If there are no requirements to use IPv6 on your system, then we recommend disabling it. Keeping IPv6 enabled in OpenShift 2 will cause the WebSphere gears to not be
+restarted properly, and in some scenarios, not restarted at all. If IPv6 is a requirement then we recommend you work with Red Hat support to create an SELinux policy that accomodates this use case.
 
-```
-module WASpol 1.0;
+Disabling IPv6 is a three step process:
 
-require {
-        type proc_net_t;
-        type node_t;
-        type openshift_t;
-        class tcp_socket node_bind;
-        class file { read open };
-}
+1. Create a file `/etc/modprobe.d/ipv6.conf` with the following contents:
 
-allow openshift_t node_t:tcp_socket node_bind;
-allow openshift_t proc_net_t:file { read open }
-```
+  `options ipv6 disable=1`
 
-The WASpol.te file should be laid down with root level permissions on the file system. Then the SELinunx policy can be laoded with the command:
+2. For completeness, it is a good idea to configure the ip6tables service not to start at boot by issuing the following command:
 
-```semodule -i WASpol.pp```
+  `chkconfig ip6tables off`
 
-The SELinux policy should now be laoded. The WASpol.te file is located under the ```usr``` directory.
+3. Safe reboot the box
+
 
 
 4. Cartridge Installation
