@@ -17,6 +17,23 @@ ifdef::backend-pdf[]
 :source-highlighter: coderay
 endif::[]
 
+= History and Revisions
+
+[cols=4,cols="1,1,3,4",options=header]
+|===
+|Version
+|Date
+|Authors
+|Changes
+
+
+|0.5
+|10/08/2015
+|Toufic Arabi tarabi@redhat.com
+|Initial Draft
+
+|===
+
 == Synopsis
 
 The purpose of this document is to present how OpenShift 2 users can interact with the WebSphere 8.5.5.1 OpenShift Enterprise V2.2 cartridge. By the end of this document
