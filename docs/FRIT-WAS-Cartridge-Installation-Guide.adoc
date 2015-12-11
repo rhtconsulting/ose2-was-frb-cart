@@ -103,7 +103,14 @@ Disabling IPv6 is a three step process:
 
 [start=3]
 
+. Additionally to prevent `rpc.nfsd` setting up IPv6 sockets while NFS server is running, edit /etc/netconfig for the lines starting with udp6 and tcp6; change the "v" in the
+third column to "-"(hyphen/dash)
+
+[start=4]
+
 . Safe reboot the box
+
+https://access.redhat.com/solutions/8709
 
 
 == Cartridge Installation
@@ -129,10 +136,14 @@ cd /usr/libexec/openshift/cartridges
 oo-admin-cartridge --action install --recursive --source /usr/libexec/openshift/cartridges
 ```
 
-To make the cartridge available run this command from the broker:
 
-`oo-admin-ctl-cartridge --activate -c import-node node.hostname`
+To make the cartridge available run these commands from the broker:
 
+```
+oo-admin-broker-cache -c
+oo-admin-ctl-cartridge --activate -c import-node node.hostname
+
+```
 This cartridge needs an existing installation of the WebSphere Application Server on each of your nodes. You need to define the location of the installation through a system wide environment variable
 
 ```
