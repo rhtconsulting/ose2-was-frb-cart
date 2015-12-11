@@ -68,9 +68,6 @@ sed -i "s|{WEBSPHERE_ADMIN_CONSOLE_URL}|${admin_console_url}|g" ${OPENSHIFT_WEBS
 client_result "######################################################################"
 client_result "Profile ${app-name} now exists. More information can be obtained from"
 client_result "your gear's app-root/data/profile/logs/AboutThisProfile.txt file"
-client_result ""
-client_result "HTTP  Port: ${OPENSHIFT_WEBSPHERE_HTTP_PROXY_PORT}"
-client_result "HTTPS Port: ${OPENSHIFT_WEBSPHERE_WC_DEFAULTHOST_SECURE_PROXY_PORT}"
 client_result "######################################################################"
 
 echo ''
