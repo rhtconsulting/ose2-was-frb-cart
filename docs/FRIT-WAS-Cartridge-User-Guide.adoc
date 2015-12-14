@@ -167,7 +167,7 @@ Creating application 'myapp' ...
 In the previous section we did not include a database for our application. In this section we demonstrate how this can be done
 from the command line.
 
-In a terminal window run the below command to create the application *myapp* with the WebSphere cartridge *frb-websphere-8.5.5.1* and an Oracle cartridge as a database add on:
+In a terminal window run the below command to create the application *myapp* with the WebSphere cartridge *frb-websphere-8.5.5.1* and an Oracle cartridge *frb-oracle-1.0* as a database add on:
 
 `rhc app create -a myapp  -n mynamespace -t frb-websphere-8.5.5.1 -t frb-oracle-1.0`
 
