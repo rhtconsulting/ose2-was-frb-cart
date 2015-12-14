@@ -110,8 +110,6 @@ third column to "-"(hyphen/dash)
 
 . Safe reboot the box
 
-https://access.redhat.com/solutions/8709
-
 
 == Cartridge Installation
 
@@ -196,7 +194,8 @@ The Admin Console should then appear.
 * http://www-01.ibm.com/support/knowledgecenter/SS7JFU_8.5.5/com.ibm.websphere.express.doc/ae/tpro_nonrootpro.html?lang=en[File Permissions for non-admin install]
 
 
-*OpenShift V2*
+*Red Hat Linux & OpenShift V2*
 
+* https://access.redhat.com/solutions/8709[Disabling IPv6 On RHEL 6]
 * http://openshift.github.io/documentation/oo_cartridge_developers_guide.html[Cartridge Developers Guide]
 * https://www.openshift.com/content/at-least-one-port-for-external-use-excluding-8080-please[How to expose more than one public port in cartridge]
