@@ -15,7 +15,7 @@ echo "$version" > "$OPENSHIFT_WEBSPHERE_DIR/env/OPENSHIFT_WEBSPHERE_VERSION"
 
 
 servername="server1"
-admin_console_url="https://${OPENSHIFT_GEAR_DNS}:${OPENSHIFT_WEBSPHERE_WC_ADMINHOST_SECURE_PROXY_PORT}/ibm/console/logon.jsp"
+admin_console_url="https://${OPENSHIFT_GEAR_DNS}:${OPENSHIFT_WEBSPHERE_WC_ADMINHOST_SECURE_PROXY_PORT}/ibm/console/logon.do"
 
 #Grab the app-name-namespace only from the full gear dns name. use this as the WAS profile name
 app_name=`echo ${OPENSHIFT_GEAR_DNS} | cut -d "." -f1`
