@@ -19,6 +19,7 @@ admin_console_url="https://${OPENSHIFT_GEAR_DNS}:${OPENSHIFT_WEBSPHERE_WC_ADMINH
 
 #Grab the app-name-namespace only from the full gear dns name. use this as the WAS profile name
 app_name=`echo ${OPENSHIFT_GEAR_DNS} | cut -d "." -f1`
+short_name=`echo ${OPENSHIFT_GEAR_DNS}  | cut -d "." -f1 | cut -d "-" -f1`
 app_name="${app_name}-${OPENSHIFT_GEAR_UUID}"
 
 #store these values as env vars in the gear
@@ -68,6 +69,13 @@ sed -i "s|{WEBSPHERE_ADMIN_CONSOLE_URL}|${admin_console_url}|g" ${OPENSHIFT_WEBS
 client_result "######################################################################"
 client_result "Profile ${app-name} now exists. More information can be obtained from"
 client_result "your gear's app-root/data/profile/logs/AboutThisProfile.txt file"
+client_result ""
+client_result "When doing deployments it is recommended to use the Red Hat Client tools"
+client_result "to perform a port forward to the admin console. The port forward is"
+client_result "necessary to avoid connection timeouts caused by WebSphere redirects"
+client_result ""
+client_result "You may do a port forward with: rhc port-forward ${short-name}"
+client_result "and then connect to the admin console via http://127.0.0.1:9043/ibm/console/login.jsp"
 client_result "######################################################################"
 
 echo ''
