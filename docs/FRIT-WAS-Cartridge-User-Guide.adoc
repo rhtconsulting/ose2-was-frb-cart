@@ -126,7 +126,7 @@ and open a browser with the following URL:
 If the port number has been misplaced it can be re-obtained as follows:
 
 ```
-  rhc ssh <GEAR_NAME>
+  rhc ssh <app-name> [-n <namespace>]  #only include namespace if mutiple apps with same name
   export | grep WC_ADMINHOST_SECURE_PROXY_PORT
 ```
 
@@ -174,3 +174,35 @@ In a terminal window run the below command to create the application *myapp* wit
 To create a scalable app, you have to add the `-s` option. The namespace `mynamespace` needs to be created before running the above command.
 
 The name of the cartridges might vary between this document's version and the current state of the cartridges with regards to versioning, yet the idea remains the same.
+
+
+== Deploying Applications to WebSphere
+
+All applications deployments should be done via the console. We also strongly recommend that the console is accessed via `rhc port-forward`  when doing deployments.
+The following notes only apply to WAS gears that are created in *scaled* mode in OpenShift.
+
+WebSphere comes pre-loaded with a set of default applications. When creating a *scaled* WebSphere gear, OpenShift creates an HA Proxy gear alongside it. When web traffic increases to the main gear
+another identical gear is created and more are added as necessary to handle the traffic. This is done automatically and once web traffic decreases, gears are destroyed. The goal of the HA proxy gear is
+to direct traffic to the WebSphere gear that can handle it based on Web traffic load.
+
+On initial creation of the scaled WAS gear, the HA proxy gear needs to be aware of an existing context as it performs a health check on its existence. The WebSphere cartridge keys off the `/hello` context
+that ships with the `DefaultWebApplication` in WebSphere.
+
+Should developers and administrators decide to remove this default application, they would have to alter the HA Proxy configuration inside their WebSphere gear to reflect a new context that would exist at server startup.
+(The root context is a valid context). Failure to do so will cause the HA proxy not to start, and the deployments to WebSphere not available via their FQDN and context.
+
+After creating the initial WebSphere gear, SSH into the gear via the RHC client tools or native SSH to the gear as the following:
+
+```
+#only include namespace if mutiple apps with same name
+rhc ssh <app-name> [-n <namespace>]
+
+OR
+
+ssh <gear-uuid>@app_name-namespace.domain
+
+```
+
+In the WebSphere gear edit the `./haproxy/conf/haproxy.cfg`
+
+Location the `GET /hello` directive and change the `/hello` directive to your new context. For example, if deploying you application to the root context, change the directive to: `GET /`
