@@ -126,7 +126,8 @@ and open a browser with the following URL:
 If the port number has been misplaced it can be re-obtained as follows:
 
 ```
-  rhc ssh <app-name> [-n <namespace>]  #only include namespace if mutiple apps with same name
+  #only include namespace if mutiple apps with same name
+  rhc ssh <app-name> [-n <namespace>]
   export | grep WC_ADMINHOST_SECURE_PROXY_PORT
 ```
 
@@ -195,6 +196,7 @@ After creating the initial WebSphere gear, SSH into the gear via the RHC client 
 
 ```
 #only include namespace if mutiple apps with same name
+
 rhc ssh <app-name> [-n <namespace>]
 
 OR
