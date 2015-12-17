@@ -189,7 +189,7 @@ On initial creation of the scaled WAS gear, the HA proxy gear needs to be aware 
 that ships with the `DefaultWebApplication` in WebSphere.
 
 Should developers and administrators decide to remove this default application, they would have to alter the HA Proxy configuration inside their WebSphere gear to reflect a new context that would exist at server startup.
-(The root context is a valid context). Failure to do so will cause the HA proxy not to start, and the deployments to WebSphere not available via their FQDN and context.
+(The root context is a valid context). Failure to do so will cause the HA proxy not to start on gear restart, and the deployments to WebSphere not available via their FQDN and context.
 
 After creating the initial WebSphere gear, SSH into the gear via the RHC client tools or native SSH to the gear as the following:
 
@@ -206,3 +206,5 @@ ssh <gear-uuid>@app_name-namespace.domain
 In the WebSphere gear edit the `./haproxy/conf/haproxy.cfg`
 
 Location the `GET /hello` directive and change the `/hello` directive to your new context. For example, if deploying you application to the root context, change the directive to: `GET /`
+
+Restart the WebSphere gear.
