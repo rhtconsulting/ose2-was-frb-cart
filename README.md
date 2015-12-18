@@ -1,6 +1,7 @@
 IBM WebSphere Application Server on OpenShift Handbook
 ======================================================
 
+
 A. Synopsis
 ===========
 
