@@ -155,7 +155,7 @@ The output below should be seen:
 [ose@node01 ~]$ rhc app create myapp frb-websphere-8.5.5.1
 Application Options
 -------------------
-Domain:     test
+Domain:     mynamespace
 Cartridges: frb-websphere-8.5.5.1
 Gear Size:  default
 Scaling:    no
@@ -168,9 +168,27 @@ Creating application 'myapp' ...
 In the previous section we did not include a database for our application. In this section we demonstrate how this can be done
 from the command line.
 
-In a terminal window run the below command to create the application *myapp* with the WebSphere cartridge *frb-websphere-8.5.5.1* and an Oracle cartridge *frb-oracle-1.0* as a database add on:
+In a terminal window run the below command to create the application *myapp* with the WebSphere cartridge *frb-websphere-8.5.5.1* and an Oracle cartridge *frb-oracle-12.0* as a database add on:
 
-`rhc app create -a myapp  -n mynamespace -t frb-websphere-8.5.5.1 -t frb-oracle-1.0`
+```
+rhc app create -a myapp  -n mynamespace -t frb-websphere-8.5.5.1 -t frb-oracle-12.0
+Application Options
+-------------------
+Domain:     mynamespace
+Cartridges: frb-websphere-8.5.5.1, frb-oracle-12.0
+Gear Size:  default
+Scaling:    no
+
+Creating application 'testkjf01' ... done
+
+  A instance has successfully be configured on the Oracle Database. Please make note of these credentials:
+
+   Script Result: SUCCESS@@oraclesrvr001@@1521@@tcdb_001
+        Username: adminin5LXMY
+        Password: 5XHV5JB2XteQ
+       Tenant ID: tcdb_001
+
+```
 
 To create a scalable app, you have to add the `-s` option. The namespace `mynamespace` needs to be created before running the above command.
 
