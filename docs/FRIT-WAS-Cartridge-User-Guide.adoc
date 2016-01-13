@@ -144,19 +144,19 @@ on your computer. The commands below assume that a domain space *test* has alrea
 
 ====  Creating WebSphere Application without a Database Add-On
 
-In a terminal window run the below command to create the application *myapp* with the WebSphere cartridge *frb-websphere-8.5.5.1*
+In a terminal window run the below command to create the application *myapp* with the WebSphere cartridge *frb-websphere-8.5*
 
-`rhc app create -a myapp -n mynamespace -t frb-websphere-8.5.5.1`
+`rhc app create -a myapp -n mynamespace -t frb-websphere-8.5`
 
 To create a scalable app, you have to add the `-s` option. The namespace `mynamespace` needs to be created before running the above command.
 The output below should be seen:
 
 ```
-[ose@node01 ~]$ rhc app create myapp frb-websphere-8.5.5.1
+[ose@node01 ~]$ rhc app create myapp frb-websphere-8.5
 Application Options
 -------------------
 Domain:     mynamespace
-Cartridges: frb-websphere-8.5.5.1
+Cartridges: frb-websphere-8.5
 Gear Size:  default
 Scaling:    no
 
@@ -168,14 +168,14 @@ Creating application 'myapp' ...
 In the previous section we did not include a database for our application. In this section we demonstrate how this can be done
 from the command line.
 
-In a terminal window run the below command to create the application *myapp* with the WebSphere cartridge *frb-websphere-8.5.5.1* and an Oracle cartridge *frb-oracle-12.0* as a database add on:
+In a terminal window run the below command to create the application *myapp* with the WebSphere cartridge *frb-websphere-8.5* and an Oracle cartridge *frb-oracle-12.0* as a database add on:
 
 ```
-rhc app create -a myapp  -n mynamespace -t frb-websphere-8.5.5.1 -t frb-oracle-12.0
+rhc app create -a myapp  -n mynamespace -t frb-websphere-8.5 -t frb-oracle-12.0
 Application Options
 -------------------
 Domain:     mynamespace
-Cartridges: frb-websphere-8.5.5.1, frb-oracle-12.0
+Cartridges: frb-websphere-8.5, frb-oracle-12.0
 Gear Size:  default
 Scaling:    no
 
