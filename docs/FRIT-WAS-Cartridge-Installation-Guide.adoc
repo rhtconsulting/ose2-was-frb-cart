@@ -63,6 +63,25 @@ The installation of IBM WebSphere on the filesystem can be done either via the I
 The main thing to note here is that profile creation inside the IBM WAS installation would need to be enabled to allow non root users to create them.
 That is because each gear in OSE will create its own profile and each gear runs as its own UUID and not as root.
 
+==== Disable Existing WebSphere Services
+If there are any WebSphere containers that are running on the system, then they should be shut down.
+
+Any WebSphere service that was setup on the machine where the WebSphere cartridge is to tbe installed need to be turned off. This can be done by removing the
+following links and turning off the setup service in *chkconfig*
+
+. Remove the links that are created for the was service
+
+  find /etc/rc* -name *was
+
+. Remove all the links that were obtained from the result of the command above with the following command:
+
+  unlink <link-name>
+
+. Finally, turn off the WebSphere service via *chkconfig* so that it is not started on startup:
+
+  chkconfig <websphere-service-name> off
+
+
 ==== Non-Root permissions
 In order to create profiles by non-root users, special file permission settings have to be set on your WebSphere installation. Please follow the steps described here:
 
@@ -83,6 +102,7 @@ Since IBM WebSphere Application is installed outside of the gear's sandbox, you 
 ```
 semanage fcontext -a -t openshift_rw_file_t "/path-to/AppServer(/.*)?"
 restorecon -R -v /path-to/AppServer/
+
 ```
 
 ===== Disable IPv6
@@ -94,12 +114,12 @@ Disabling IPv6 is a three step process:
 
 . Create a file `/etc/modprobe.d/ipv6.conf` with the following contents:
 
-  `options ipv6 disable=1`
+  options ipv6 disable=1
 
 [start=2]
 . For completeness, it is a good idea to configure the ip6tables service not to start at boot by issuing the following command:
 
-  `chkconfig ip6tables off`
+  chkconfig ip6tables off
 
 [start=3]
 
