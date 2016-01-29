@@ -19,7 +19,7 @@ endif::[]
 
 = History and Revisions
 
-[cols=4,cols="1,1,3,4",options=header]
+[cols=4,cols="1,2,3,4",options=header]
 |===
 |Version
 |Date
@@ -62,6 +62,9 @@ The following sections will present how each of these methods can be used to cre
 :sectnums:
 The steps to create a WebSphere gear via the OpenShift console are very straightforward:
 
+NOTE: Provisioning a WebSphere server via the OpenShift console is only to be done by NIT MW Administrators and not developers. Developers, while they have access to the OpenShift console,
+and while they can create WebSphere gears, will not be able to access the WebSphere console once the gear is created.
+
 ==== Login to the OpenShift Console
 
 NOTE: OpenShift can be configured with various identity stores. Check with your organization's administrator to find out your login credentials.
@@ -88,14 +91,14 @@ On the next page you will be presented with a form that has a few fields to be c
 2. Source Code: If your application code is stored in a Git repository, you may provide the Git URL and OpenShift will clone the code into the Gear so that the application
 is built and ready on gear creation - Not frequently used.
 
-3. Gears: This is the size in memory, disk and CPU that will be given to the application. Each cartridge may be associated wiht one or more gear types. Check your OpenShift administrator
+3. Gears: This is the size in memory, disk and CPU that will be given to the application. Each cartridge may be associated with one or more gear types. Check your OpenShift administrator
 to find out what gear size to choose for the WebSphere cartridge
 
 4. Scaling:
 
 There are two options that you may choose from:
 
-* *No Scaling:* This means that OpenShift will not attempt to spin up identical gears of your applicaiton when its being "hit" with a lot of web traffic
+* *No Scaling:* This means that OpenShift will not attempt to spin up identical gears of your application when its being "hit" with a lot of web traffic
 * *Scaling:* Allows OpenShift to create more gears as web traffic increases to your application. This is horizontal scaling. Once the web traffic is reduced, the additional gears are destroyed
 and resources are released back to the system.
 
@@ -113,46 +116,43 @@ The OpenShift console will then echo out the details of the WebSphere Administra
 image::../usr/doc/admin-console-welcome.png[caption="Figure 5: ", title="WebSphere Gear Creation Confirmation and Console Details"]
 
 
-The WebSphere Administration Console can be access in two ways:
+The WebSphere Administration Console can be accessed via the *port-forward* that ships with the Red Hat Client Tools once a WebSphere application has been created:
 
-* Option 1: Preferred - After you have created your gear, do an `rhc port-forward <GEAR_NAME>`
+. After you have created your gear (application), do an `rhc port-forward <APP_NAME>`
 and open a browser with the following URL:
 
 ```
-  https://<YOUR_LOCAL_IP>:9043/ibm/console
+  https://127.0.0.1:9043/ibm/console/logon.jsp
 ```
-* Option 2: The Admin Console is also exposed via a separate external port that is echoed upon gear creation in the OSE console.
+[start=2]
+. The Admin Console should then present a username and password challenge as per the image below. Enter your AD (windows login) credentials to login
 
-If the port number has been misplaced it can be re-obtained as follows:
+image::../usr/doc/was-admin-console-challenge.png[caption="Figure 6: ", title="WebSphere Administration Console Username/Password Challenge"]
 
-```
-  #only include namespace if mutiple apps with same name
-  rhc ssh <app-name> [-n <namespace>]
-  export | grep WC_ADMINHOST_SECURE_PROXY_PORT
-```
+<<<
 
-[%hardbreaks]
-Now point your browser to the following URL:
-`https://<GEAR_DNS>:<WC_ADMINHOST_SECURE_PROXY_PORT>/ibm/console/logon.jsp`
-
-The Admin Console should then appear.
-
-=== Creating WebSphere Application with OpenShift Red Hat Client Tools
+=== Creating WebSphere Applications with OpenShift Red Hat Client Tools
 
 The second mechanism by why a WebSphere application may be created is via the OpenShift Red Hat client tools that could be installed
-on your computer. The commands below assume that a domain space *test* has already been created.
+on your computer. The commands below assume that a domain space *mynamespace* has already been created.
+
+NOTE: This is the only way by which non Admin users will be able to access the WebSphere console with their Active Directory (windows) credentials. Admin users, if using the client tools do not need to pass the OPENSHIFT_LOGIN_WAS* variable.
+
 
 ====  Creating WebSphere Application without a Database Add-On
 
 In a terminal window run the below command to create the application *myapp* with the WebSphere cartridge *frb-websphere-8.5*
 
-`rhc app create -a myapp -n mynamespace -t frb-websphere-8.5`
+`rhc app create -a myapp -n mynamespace -t frb-websphere-8.5 -e OPENSHIFT_LOGIN_WAS=your_username`
+
+The `OPENSHIFT_LOGIN_WAS` variable must be set to the same username that is authorized in the idenity store (AD) that WebSphere authenticates against. This username is most likely the
+same username that you used to login to the OpenShift Console and your windows computer.
 
 To create a scalable app, you have to add the `-s` option. The namespace `mynamespace` needs to be created before running the above command.
 The output below should be seen:
 
 ```
-[ose@node01 ~]$ rhc app create myapp frb-websphere-8.5
+[ose@node01 ~]$ rhc app create -a myapp -t frb-websphere-8.5 -n mynamespace -e OPENSHIFT_LOGIN_WAS=your_username
 Application Options
 -------------------
 Domain:     mynamespace
@@ -171,7 +171,7 @@ from the command line.
 In a terminal window run the below command to create the application *myapp* with the WebSphere cartridge *frb-websphere-8.5* and an Oracle cartridge *frb-oracle-12.0* as a database add on:
 
 ```
-rhc app create -a myapp  -n mynamespace -t frb-websphere-8.5 -t frb-oracle-12.0
+rhc app create -a myapp  -n mynamespace -t frb-websphere-8.5 -t frb-oracle-12.0 -e OPENSHIFT_LOGIN_WAS=your_username
 Application Options
 -------------------
 Domain:     mynamespace
@@ -187,17 +187,76 @@ Creating application 'testkjf01' ... done
         Username: adminin5LXMY
         Password: 5XHV5JB2XteQ
        Tenant ID: tcdb_001
-
 ```
 
 To create a scalable app, you have to add the `-s` option. The namespace `mynamespace` needs to be created before running the above command.
 
 The name of the cartridges might vary between this document's version and the current state of the cartridges with regards to versioning, yet the idea remains the same.
 
+== Viewing WebSphere Logs
+
+The WebSphere logs can be viewed in two ways, either via SSHing to the OpenShift gear, or by using the Red Hat Client tools log tailing functionality:
+
+. SSHing to the Gear:
+
+Run the command:
+
+`rhc ssh <app-name> -n namespace`
+
+You will then be SSH'ed into the gear of where WebSphere is running.
+
+The SystemOut.log and SystemErr.log are located under:
+
+`./app-root/data/profile/logs/server1/SystemOut.log` and
+
+`./app-root/data/profile/logs/server1/SystemErr.log`
+
+[start=2]
+. Using the RHC Client Tail Command:
+
+You may tail the WebSphere *SystemOut.log* and *SystemErr.log* files with the tailing feature that ships in the Red Hat OpenShift Client Tools. To run the tail execute the command:
+
+`rhc tail -a <app-name> -n <namespace>`
+
+A tail of the SystemOut.log and SystemErr.log files will be shown.
+
+== Running WSADMIN Utility in the OpenShift Gear
+
+Each WebSphere application/gear gets created is its own separate container on the PaaS. This means that the same "VM" where this container is running needs to be shared amongst all the containers,
+including its IP.
+
+OpenShift relies on the local loopback address to share out the one public IP and proxies requests back to each individual WebSphere container that is binded to the local loopback address. Each WebSphere container
+will get an IP address in the 127.x.x.x range.
+
+WebSphere users and administrators might be interested in running the *wsadmin* utility to execute admin type configurations against WebSphere. This can be done by SSHing to the OpenShif WebSphere gear that was created
+and running the *wsadmin.sh* script from there. Since the WebSphere server inside the gear is binded to an address in the 127.x.x.x range and not 0.0.0.0 or the public IP of the node where the gear is running we need to
+pass that IP to the *wsadmin* utility. We can also, edit the properties file that the *wsadmin* utility reads the host where it needs to connect to so that the *wsadmin.sh* script can be executed without any parameters.
+
+. SSH to the gear via the RHC client tools:
+`rhc ssh <app-name> -n namespace`
+
+Then, change your current working directory to `./app-root/data/profile/bin`
+
+[start=2]
+. Find the IP that WebSphere is binded to. This can be done by run the command:
+`env | grep OPENSHIFT_WEBSPHERE_IP`
+
+[start=3]
+. You can then run the wsadmin.sh script and pass the *-host* option as so
+
+`./wsadmin.sh -host $OPENSHIFT_WEBSPHERE_IP`
+
+or change the value of the host in the properties file that the wsadmin.sh script reads parameters from. This file is located under:
+
+`./app-root/data/profile/properties/wsadmin.properties`
+
+Replace the values `com.ibm.ws.scripting.host` & `com.ibm.ws.scripting.ipchost` with the `OPENSHIFT_WEBSPHERE_IP` from above.
+
+This would allow for the *wsadmin.sh* script to be executed without any flags.
 
 == Deploying Applications to WebSphere
 
-All applications deployments should be done via the console. We also strongly recommend that the console is accessed via `rhc port-forward`  when doing deployments.
+All applications deployments should be done via the WebSphere console. We also strongly recommend that the console is accessed via `rhc port-forward`  when doing deployments.
 The following notes only apply to WAS gears that are created in *scaled* mode in OpenShift.
 
 WebSphere comes pre-loaded with a set of default applications. When creating a *scaled* WebSphere gear, OpenShift creates an HA Proxy gear alongside it. When web traffic increases to the main gear
@@ -215,7 +274,7 @@ Should developers and administrators decide to remove this default application, 
 After creating the initial WebSphere gear, SSH into the gear via the RHC client tools or native SSH to the gear as the following:
 
 ```
-#only include namespace if mutiple apps with same name
+#only include namespace if multiple apps with same name
 
 rhc ssh <app-name> [-n <namespace>]
 

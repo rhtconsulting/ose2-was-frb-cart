@@ -19,7 +19,7 @@ endif::[]
 
 = History and Revisions
 
-[cols=4,cols="1,1,3,4",options=header]
+[cols=4,cols="1,2,3,4",options=header]
 |===
 |Version
 |Date
@@ -66,7 +66,7 @@ That is because each gear in OSE will create its own profile and each gear runs 
 ==== Disable Existing WebSphere Services
 If there are any WebSphere containers that are running on the system, then they should be shut down.
 
-Any WebSphere service that was setup on the machine where the WebSphere cartridge is to tbe installed need to be turned off. This can be done by removing the
+Any WebSphere service that was setup on the machine where the WebSphere cartridge is to be installed need to be turned off. This can be done by removing the
 following links and turning off the setup service in *chkconfig*
 
 . Remove the links that are created for the was service
@@ -170,6 +170,44 @@ echo "/path-to/AppServer" > /etc/openshift/env/OPENSHIFT_WEBSPHERE_INSTALL_LOCAT
 
 The cartridge keys off this global OpenShift environment variable to know where the WAS binaries are located so that it may create a profile for each gear created.
 
+== MCollective & OpenShift Console Timeouts
+
+The WebSphere cartridge creates a unique profile for every gear as described in following sections. The profile creation is also followed by enabling global security on the WebSphere gear. The profile creation
+and global security enablement can take around 6-8 minutes meaning that it will take longer than the usual cartridges that ship with OpenShift Enterprise, such as JBoss.
+
+The duration discussed above causes the Red Hat Client Tools and the OpenShift Admin Console to show timeout errors when creating WebSphere gears. While the timeout occurs the gears still create in the background
+and will be available at the end.
+
+There are a few changes that we can make in OpenShift so that these timeouts do not occur, and so that users can maintain a friendly experience. These values are listed below.
+
+=== MCollective Timeouts
+
+
+. On the broker change the `MCOLLECTIVE_TIMEOUT` from *240* to *720* in `/etc/openshift/plugins.d/openshift-origin-msg-broker-mcollective.conf`
+
+[start=2]
+
+. On the broker add the `ProxyTimeout 720`  directive in `/etc/httpd/conf.d/000002_openshift_origin_broker_proxy.conf` as the last directive in the `:80` & `:443` Vhost configurations.
+
+[start=3]
+. On the node, change the `:timeout => 360` to `:timeout => 720` in the `/opt/rh/ruby193/root/usr/libexec/mcollective/mcollective/agent/openshift.ddl` file.
+
+NOTE: The *openshift.ddl* file is susceptible to be overwritten during a *yum update* of the node so extra care must be take to keep the file with the right configuration.
+
+=== OpenShift Console Timeouts
+
+The console timeout is controlled via a Ruby file and is only set by default to 240 seconds. We need to increase the console timeout to accomodate for the WebSphere cartridge so that users using the console
+do not get timeout errors. It is worth noting that if this value is not increased, and if users use the console and receive the warning, OSE will continue to create the WebSphere gear.
+
+To increase the timeout locate the
+
+`/opt/rh/ruby193/root/usr/share/gems/gems/openshift-origin-console-1.35.2.1/app/models/rest_api/base.rb`
+
+and change the `self.read_timeout = 240` to `self.read_timeout = 720`
+
+Restart the OpenShift broker and OpenShift console services on the broker.
+
+
 == Administration and configuration
 
 === How profile creation works
@@ -181,28 +219,18 @@ It is very important for the non-root users to be configured to be allowed the n
 
 === Access to WebSphere Admin Console
 
-The WebSphere Administration Console can be access in two ways once a WebSphere application has been created either via the RHC client tools or the OpenShift console:
+The WebSphere Administration Console can be accessed via the *port-forward* that ships with the Red Hat Client Tools once a WebSphere application has been created:
 
-* Option 1: Preferred - After you have created your gear, do an `rhc port-forward <GEAR_NAME>`
+. After you have created your gear (application), do an `rhc port-forward <APP_NAME>`
 and open a browser with the following URL:
 
 ```
-  https://<YOUR_LOCAL_IP>:9043/ibm/console
+  https://127.0.0.1:9043/ibm/console/logon.jsp
 ```
-* Option 2: The Admin Console is also exposed via a separate external port that is echoed upon gear creation in the OSE console.
+[start=2]
+. The Admin Console should then present a username and password challenge as per the figure below. Enter your AD (windows login) credentials to login
 
-If the port number has been misplaced it can be re-obtained as follows:
-
-```
-  rhc ssh <GEAR_NAME>
-  export | grep WC_ADMINHOST_SECURE_PROXY_PORT
-```
-
-[%hardbreaks]
-Now point your browser to the following URL:
-`https://<GEAR_DNS>:<WC_ADMINHOST_SECURE_PROXY_PORT>/ibm/console/login.do`
-
-The Admin Console should then appear.
+image::../usr/doc/was-admin-console-challenge.png[caption="Figure 1: ", title="WebSphere Administration Console Username/Password Challenge"]
 
 == Reference Information
 
