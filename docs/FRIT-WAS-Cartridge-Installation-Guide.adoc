@@ -69,9 +69,10 @@ If there are any WebSphere containers that are running on the system, then they 
 Any WebSphere service that was setup on the machine where the WebSphere cartridge is to be installed need to be turned off. This can be done by removing the
 following links and turning off the setup service in *chkconfig*
 
-. Remove the links that are created for the was service
+. Remove the links that are created for the was & ihs service. You can find those links with the commands
 
   find /etc/rc* -name *was
+  find /etc/rc* -name *ihs
 
 . Remove all the links that were obtained from the result of the command above with the following command:
 
@@ -145,7 +146,7 @@ You will also need to set the correct SELinux Context on the cartridge so that i
 
 To set this context run the following command:
 
-`chcon -R -u system_u /usr/libexec/openshift/cartridges/ose2-was-frb-cart-frb-was/`
+`chcon -R -u system_u /usr/libexec/openshift/cartridges/ose2-was-frb-cart/`
 
 On each OpenShift node where you wish to make this cartridge available execute the following commands:
 
