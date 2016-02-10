@@ -46,9 +46,17 @@ The cartridge currently supports the following features:
 
 == Installation
 
-=== Setup OSE Environment
+=== Setup OSE Environment & WebSphere Nodes
 
-The setup of the OSE Environment can be accomplished as per your usual way of deploying broker and nodes. This could be via the OSE install script, or any other CM tools like Puppet and Ansible
+The setup of the OSE Environment can be accomplished as per your usual way of deploying broker and nodes. This could be via the OSE install script, or any other CM tools
+like Puppet and Ansible.
+
+The WebSphere nodes will be dedicated to WebSphere. The WebSphere gears need to be configured to run under the `wsadmin` supplementary group to conform to security restrictions.
+
+To enable gear supplementary groups, located the `/etc/openshift/node.conf` file on the WebSphere OpenShift nodes. In this file, locate the `GEAR_SUPPLEMENTARY_GROUPS` property
+and set its value to `"wsadmin"`.
+
+Restart the Mcollective service on the OpenShift WebSphere node: `service ruby193-mcollective restart`
 
 === WebSphere Application Server Installation
 
@@ -84,11 +92,10 @@ following links and turning off the setup service in *chkconfig*
 
 
 ==== Non-Root permissions
-In order to create profiles by non-root users, special file permission settings have to be set on your WebSphere installation. Please follow the steps described here:
+In order to create profiles by non-root users, special file permission settings have to be set on your WebSphere installation. The OpenShift WebSphere gears run
+under the `wsadmin` group on each node. To allow those gears to run that group, the `wsadmin` group would require read, write and execute permissions on its files.
 
-http://www-01.ibm.com/support/knowledgecenter/SS7JFU_8.5.5/com.ibm.websphere.express.doc/ae/tpro_nonrootpro.html?lang=en[WebSphere Non Root Permissions Configuration]
-
-We have included the `setWebSpherePermissionsForNonRootProfileCreation.sh` that sets basic file permissions on the directories that gears would require to access.
+The above can be accomplished by doing the command: `chmod -R 770 /path-to/AppServer`
 
 ==== SELinux Permissions & IPv6
 
