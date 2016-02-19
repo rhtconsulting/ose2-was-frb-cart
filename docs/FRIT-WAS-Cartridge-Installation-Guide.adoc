@@ -97,6 +97,26 @@ under the `wsadmin` group on each node. To allow those gears to run that group, 
 
 The above can be accomplished by doing the command: `chmod -R 770 /path-to/AppServer`
 
+Furthermore, we need to have all new files created under the WebSphere installation have the `wsadmin` group. To do so we need to run these commands:
+
+```
+#set the gid bit
+chmod -R g+s /path-to/AppServer
+chgrp -R wsadmin /path-to/AppServer
+```
+
+The cache in WebSphere will be shared amongst gears, and written to the default WebSphere set locatioon of `/tmp/javasharedresources`. We need
+to set the git bit on that directory as well. If the 'javasharedresources' directory is not there, then create it with the command:
+
+`mkdir -p /tmp/javasharedresources/``
+
+Set the gid bit as follows and the group ownerships:
+
+```
+chmod -R g+ws /tmp/javasharedresources`
+chgrp -R wsadmin /tmp/javasharedresources
+```
+
 ==== SELinux Permissions & IPv6
 
 With SELinux enabled on the system, we will require that the following group context be set on the IBM WAS AppServer directory.
@@ -191,16 +211,23 @@ There are a few changes that we can make in OpenShift so that these timeouts do 
 === MCollective Timeouts
 
 
-. On the broker change the `MCOLLECTIVE_TIMEOUT` from *240* to *720* in `/etc/openshift/plugins.d/openshift-origin-msg-broker-mcollective.conf`
+. On the broker change the `MCOLLECTIVE_TIMEOUT` from *240* to *2160* in `/etc/openshift/plugins.d/openshift-origin-msg-broker-mcollective.conf`
 
 [start=2]
 
-. On the broker add the `ProxyTimeout 720`  directive in `/etc/httpd/conf.d/000002_openshift_origin_broker_proxy.conf` as the last directive in the `:80` & `:443` Vhost configurations.
+. On the broker add the `ProxyTimeout 2160`  directive in `/etc/httpd/conf.d/000002_openshift_origin_broker_proxy.conf` as the last directive in the `:80` & `:443` Vhost configurations.
 
 [start=3]
-. On the node, change the `:timeout => 360` to `:timeout => 720` in the `/opt/rh/ruby193/root/usr/libexec/mcollective/mcollective/agent/openshift.ddl` file.
 
-NOTE: The *openshift.ddl* file is susceptible to be overwritten during a *yum update* of the node so extra care must be take to keep the file with the right configuration.
+. Also, on the broker in `/opt/rh/ruby193/root/usr/share/gems/gems/openshift-origin-console-1.35.2.1/app/models/rest_api/base.rb` change
+`self.read_timeout = 720` to `self.read_timeout = 2160`
+
+[start=4]
+. On the node, change the `:timeout => 360` to `:timeout => 2160` in the `/opt/rh/ruby193/root/usr/libexec/mcollective/mcollective/agent/openshift.ddl` file.
+
+NOTE: The above files are susceptible to be overwritten during a *yum update* of the node so extra care must be take to keep the file with the right configuration.
+
+Restart the OpenShift Broker Service on the broker node. Restart the MCollective Service on the WebSphere nodes.
 
 === OpenShift Console Timeouts
 
